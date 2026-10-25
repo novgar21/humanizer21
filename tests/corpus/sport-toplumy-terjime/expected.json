@@ -1,0 +1,36 @@
+{
+  "source_language": "ru",
+  "request": "Şu metni türkmen diline terjime et, habar saýtymyz üçin. Emeli aň yzlary bolmasyn.",
+  "must_keep": [
+    "Mary",
+    "2026-njy ýylyň 15-nji noýabrynda",
+    "sport toplumy",
+    "maksatnamas",
+    "sport zal",
+    "25 metr",
+    "ýüzüş howzy",
+    "600",
+    "40 göterim",
+    "häkimliginiň metbugat gullugy",
+    "2,5 million mana",
+    "Mergen Allaýew",
+    "«"
+  ],
+  "must_not": [
+    "Конечно",
+    "Надеюсь",
+    "🏟",
+    "💪",
+    "**",
+    "Şuny bellemek",
+    "diňe bir",
+    "bolup durýar",
+    "çäklerinde",
+    "rol oýna",
+    "Hünärmen",
+    "täze sahypa",
+    "ajaýyp mümkinçilik",
+    "howdan",
+    "zallary"
+  ]
+}

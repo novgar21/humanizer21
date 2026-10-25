@@ -32,8 +32,11 @@ class TestCorpus(unittest.TestCase):
                 self.assertGreaterEqual(len(failed), 5)
 
     def test_barla_flags_every_input(self):
+        import json
         for case in CASES:
             with self.subTest(case=case):
+                if json.loads(read(case, "expected.json")).get("source_language", "tk") != "tk":
+                    continue  # barla.py checks Turkmen only; translation inputs are in another language
                 s = barla.run(read(case, "input.txt"))["summary"]
                 self.assertGreaterEqual(s["error"] + s["warn"], 5)
 

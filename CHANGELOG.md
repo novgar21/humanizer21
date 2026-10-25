@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.6
+
+- Added a table of words that look interchangeable but are not, starting with `howuz` (a built basin: `ýüzüş howzy`) and `howdan` (a reservoir in the open), confirmed by a native speaker after a translation test produced `ýüzüş howdany` for a pool in a sports complex.
+- When the skill translates or picks between two close words it is not sure about, it now lists the choice under "to verify" with the alternative.
+- Added a seventh corpus case: a Russian press release translated into Turkmen.
+
 ## 1.1.5
 
 - §23 now says to cut what the addressee already knows, not just move it below the request, and never to remind a reader of what they said themselves. The audit checks §23 again in memos and letters, and lists Russian calques among the tells that most often survive.

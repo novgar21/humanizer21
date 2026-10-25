@@ -201,6 +201,17 @@ Keep international words that have no established Turkmen equivalent: `prezident
 - `beýik` is "great, lofty", not a plain "big"; `möhüm` is "important", not "large".
 - Formal verbs used where nothing formal happens (`amala aşyrmak` for "did") are padding.
 
+### Words that look interchangeable but are not
+
+Machine Turkmen often picks the wrong one of two close words, and neither `barla.py` nor a spelling dictionary will catch it, because both words are spelled correctly.
+
+| Word | Means | Use for | Not for |
+|---|---|---|---|
+| `howuz` (`howzy`) | a small, built basin of water, open or indoor | a swimming pool (`ýüzüş howzy`), a fountain basin | a lake or reservoir |
+| `howdan` | a body of water in the open, a reservoir or pond | a reservoir, a pond in nature | a pool in a sports complex |
+
+Confirmed by a native speaker after a test in which a 25-metre pool in a sports complex came out as `ýüzüş howdany`. Add further pairs here as they turn up.
+
 ## 11. Old and new words
 
 - Soviet terms are now historical or replaced: `kolhoz` → `daýhan birleşigi`, `raýon` → `etrap`, `oblast` → `welaýat`, `sowet` → `geňeş`. Use them only when writing about the past.

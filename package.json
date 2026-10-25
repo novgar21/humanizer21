@@ -1,6 +1,6 @@
 {
   "name": "humanizer21",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Turkmen language humanizer: a skill that removes AI tells and fixes Turkmen spelling, grammar and punctuation.",
   "bin": {
     "humanizer21": "bin/install.js"

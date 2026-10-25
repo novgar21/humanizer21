@@ -117,5 +117,5 @@ When you write from scratch, the same rules apply before the text exists:
 ## Limits
 
 - This skill improves text. It cannot certify that a text will pass an "AI detector"; those tools are unreliable for Turkmen.
-- Rules here are summarized in our own words from the public grammar pages of enedilim.com and general knowledge of Turkmen. For a disputed spelling, the orthographic dictionary on enedilim.com is the authority.
+- Rules here are summarized in our own words from enedilim.com, used with the permission of the Ene dilim project, plus general knowledge of Turkmen. For a disputed spelling, the orthographic dictionary on enedilim.com is the authority.
 - Text written in Turkmen Cyrillic: convert to Latin only if the user asks; otherwise edit it in Cyrillic using the same grammar.

@@ -38,15 +38,15 @@ More worked examples, including a letter, a social post and a translation from R
 ### Claude Code
 
 ```bash
-npx github:<user>/humanizer21
+npx github:novgar21/humanizer21
 ```
 
 This copies the skill to `~/.claude/skills/humanizer21`, so it works in every project. Options:
 
 ```bash
-npx github:<user>/humanizer21 --project       # only this project: ./.claude/skills
-npx github:<user>/humanizer21 --dir <path>    # any other skills folder
-npx github:<user>/humanizer21 --uninstall     # remove it again
+npx github:novgar21/humanizer21 --project       # only this project: ./.claude/skills
+npx github:novgar21/humanizer21 --dir <path>    # any other skills folder
+npx github:novgar21/humanizer21 --uninstall     # remove it again
 ```
 
 Once the package is published on npm, `npx humanizer21` works the same way.
@@ -54,17 +54,17 @@ Once the package is published on npm, `npx humanizer21` works the same way.
 ### claude.ai
 
 ```bash
-npx github:<user>/humanizer21 --zip
+npx github:novgar21/humanizer21 --zip
 ```
 
-Then upload `humanizer21.zip` in **Settings > Capabilities > Skills > Upload skill**. Skills need a Pro, Max, Team or Enterprise plan with code execution turned on. You can also download the zip from the Releases page instead of running npx.
+Then upload `humanizer21.zip` in **Settings > Capabilities > Skills > Upload skill**. Skills need a Pro, Max, Team or Enterprise plan with code execution turned on. You can also download the zip from the [Releases](https://github.com/novgar21/humanizer21/releases) page instead of running npx.
 
 ### ChatGPT, Grok, Gemini, DeepSeek and others
 
 These assistants do not load skill folders, so humanizer21 ships a single prompt file that holds the core rules:
 
 ```bash
-npx github:<user>/humanizer21 --prompt
+npx github:novgar21/humanizer21 --prompt
 ```
 
 This saves `humanizer21-prompt.md` (about 6,000 characters). Then:
@@ -162,7 +162,7 @@ Run the tests with `npm test`.
 
 ## Sources
 
-The grammar rules are summarized in our own words from the public pages of [Ene dilim](https://enedilim.com/), the reference site for Turkmen spelling and grammar. For a disputed spelling, its orthographic dictionary is the authority, and the skill checks words there when the assistant can browse. This project is not affiliated with Ene dilim.
+The grammar rules are summarized in our own words from [Ene dilim](https://enedilim.com/), the reference site for Turkmen spelling and grammar, and are used with the permission of the Ene dilim project. Many thanks to its authors. For a disputed spelling, the Ene dilim orthographic dictionary is the authority, and the skill checks words there when the assistant can browse.
 
 The general AI writing patterns build on Wikipedia's [Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing).
 
@@ -174,7 +174,7 @@ The general AI writing patterns build on Wikipedia's [Signs of AI writing](https
 
 ## Contributing
 
-Corrections from native speakers are the most valuable contribution: a wrong rule, a missing Turkish false friend, a phrase that machines overuse. Open an issue or a pull request with the example and the correct form.
+Corrections from native speakers are the most valuable contribution: a wrong rule, a missing Turkish false friend, a phrase that machines overuse. Open an [issue](https://github.com/novgar21/humanizer21/issues) or a pull request with the example and the correct form.
 
 ## License
 

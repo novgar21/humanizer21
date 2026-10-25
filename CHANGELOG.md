@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- `barla.py` no longer reads `bir` in `diňe bir`, `her bir`, `hiç bir`, `ýene bir` and `haýsy bir` as the number one, so `diňe bir meseleleri` is not reported as a plural after a number.
+
 ## 1.1.1
 
 - The draft audit now says what counts as a fact: something a reader could check (a name, number, date, place, event, or a quote of a named person). Sayings, answers to an objection nobody raised and claims of unnamed experts are not facts; §3, §5 and §15 cut them instead of softening them, and every such cut is listed in the notes to the user. Found in a test where `Endik — saglygyň açary`, `... diýip pikir edýänler hem bar` and `Hünärmenleriň pikiriçe` survived in a softer form.

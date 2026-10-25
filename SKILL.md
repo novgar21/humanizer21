@@ -4,7 +4,7 @@ description: Turkmen language humanizer. Edits and writes Turkmen text (türkmen
 license: MIT
 metadata:
   author: Novruz Garryyev
-  version: "1.1.1"
+  version: "1.1.2"
 ---
 
 # humanizer21

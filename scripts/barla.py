@@ -371,6 +371,10 @@ def check_numbers(text, masked, findings):
         low = norm_lower(noun)
         if low in PLURAL_OK_AFTER_NUMBER or low in NUMBER_WORDS:
             continue
+        # "bir" is also an article or part of a phrase: diňe bir, her bir, hiç bir, ýene bir.
+        before = norm_lower(masked[max(0, m.start() - 12):m.start()])
+        if norm_lower(m.group(0)).startswith("bir") and re.search(r"(diňe|her|hiç|ýene|haýsy)\s+$", before):
+            continue
         if re.search(r"(lar|ler)(y|i|a|e|da|de|dan|den|yň|iň|y?n?y?)?$", low) and len(low) > 4:
             stem = re.sub(r"(lar|ler).*$", "", low)
             if last_vowel(stem):

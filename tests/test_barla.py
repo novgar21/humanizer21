@@ -76,6 +76,10 @@ class TestNumbers(unittest.TestCase):
         self.assertEqual(found, ["mikrofonlar", "kompýuterler"])
         self.assertNotIn("plural-after-number", cats("5 ýyldan bäri adamlar gelýär."))
 
+    def test_bir_in_set_phrases_is_not_a_number(self):
+        self.assertNotIn("plural-after-number", cats("Olar diňe bir meseleleri çözmekde däl. Her bir okuwçylaryň işi."))
+        self.assertIn("plural-after-number", cats("Bir kitaplar."))
+
 
 class TestPhrasesAndPunctuation(unittest.TestCase):
     def test_chatbot_residue(self):

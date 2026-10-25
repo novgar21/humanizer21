@@ -216,8 +216,8 @@ Remove these outright, on one sighting.
 
 Act on this pattern when the text is a reply, a memo or a letter to someone who already knows the background.
 
-**Watch for:** a short message that restates the problem, walks through the diagnosis and only reaches the request in the last line; `Siziň bilşiňiz ýaly, ...` followed by things the reader saw.
-**Problem:** the reader already has the context, so rebuilding it buries the point. Lead with the request or decision; keep only the reasoning that would change whether the reader agrees.
+**Watch for:** a short message that restates the problem, walks through the diagnosis and only reaches the request in the last line; `Siziň bilşiňiz ýaly, ...` followed by things the reader saw; reminding the reader of what they themselves said or decided (`Siz bu barada geçen ýygnakda hem aýtdyňyz`).
+**Problem:** the reader already has the context, so rebuilding it buries the point. Lead with the request or decision; keep only the reasoning that would change whether the reader agrees. Moving the background below the request is not enough: cut what the reader already knows, and above all never tell a reader what they said themselves. Background the reader knows is not a fact the edit must keep.
 
 > Before: Siziň bilşiňiz ýaly, duşenbe güni ýaýlymda ses kesildi. Men bu meseläni barladym: mikrofonyň kabeli könelipdir, ätiýaçlyk mikrofonymyz hem ýok. Şonuň üçin täze kabel satyn almaga rugsat bermegiňizi haýyş edýärin.
 >

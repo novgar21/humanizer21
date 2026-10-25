@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.5
+
+- §23 now says to cut what the addressee already knows, not just move it below the request, and never to remind a reader of what they said themselves. The audit checks §23 again in memos and letters, and lists Russian calques among the tells that most often survive.
+- The audit no longer lets two separate statements of the source be joined by a cause or purpose the source did not state.
+- `barla.py` now catches the Russian calques `-yň çäklerinde`, `öz içine alýar`, `bolup durýar` and padding `amala aşyrylýar`; `Siziň bilşiňiz ýaly` and reminders of what the reader said (§23); the Turkish `-abilir/-ebilir` (`gowulaşabilir` → `gowulaşyp biler`); and an apostrophe before an ending (`YouTube'da`, `Aşgabat'da`).
+- Added a sixth corpus case: a memo to a general director, with hidden characters and a Cyrillic letter inside a Latin word.
+
 ## 1.1.4
 
 - `barla.py` now catches an ending that breaks harmony after the plural (`mekdeplerda` → `mekdeplerde`), knowledge-limit wording before a guess (`Elimdäki maglumatlara görä`, §21), and Markdown headings that capitalize every word. The emoji note no longer makes an exception for social posts.

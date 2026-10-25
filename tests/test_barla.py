@@ -65,6 +65,19 @@ class TestWords(unittest.TestCase):
         self.assertIn("formatting", cats("## Sanly Bilimiň Täze Döwri\nTekst."))
         self.assertNotIn("formatting", cats("## Sanly bilimiň täze döwri\nAşgabat şäheri."))
 
+    def test_russian_calques_and_wrong_reader(self):
+        c = cats("Taslamanyň çäklerinde studiýa guruldy. Bäsleşik iki tapgyry öz içine alýar.")
+        self.assertEqual(c.count("calque"), 2)
+        self.assertIn("wrong-reader", cats("Siziň bilşiňiz ýaly, kanal açyldy. Siz bu barada ýygnakda hem aýtdyňyz."))
+
+    def test_turkish_abilir(self):
+        self.assertIn("turkish-word", cats("Görkezijiler gowulaşabilir."))
+        self.assertNotIn("turkish-word", cats("Görkezijiler gowulaşyp biler. Ol kabil adam."))
+
+    def test_apostrophe_before_ending(self):
+        self.assertIn("apostrophe", cats("Kanal YouTube'da açyldy, Aşgabat'da hem."))
+        self.assertNotIn("apostrophe", cats("Kanal Aşgabatda açyldy."))
+
     def test_genitive_n(self):
         self.assertIn("n-vs-ň", cats("Türkmenistanyn paýtagty"))
 

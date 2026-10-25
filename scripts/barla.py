@@ -130,6 +130,18 @@ AI_PHRASES = [
      "'As seen from the above' repeats what the reader just read.", False),
     (r"\bdiňe bir\b[^.!?]{1,80}\bdäl\b[^.!?]{0,20}\beýsem\b", "not-x-but-y",
      "'diňe bir ... däl, eýsem ...' contrast. Normal in official news; elsewhere state the point directly.", True),
+    (r"\w+(?:yň|iň|uň|üň|nyň|niň)\s+çäklerinde", "calque",
+     "'-yň çäklerinde' copies Russian 'в рамках'. Try '-a laýyklykda', '-yň esasynda', 'boýunça' or a plain case ending.", False),
+    (r"\böz içine al", "calque",
+     "'öz içine alýar' copies Russian 'включает в себя'. Try '-dan ybarat' or '... bar'.", False),
+    (r"\bbolup durýar", "calque",
+     "'bolup durýar' copies Russian 'является'. Often '-dyr' or no linking verb reads better.", True),
+    (r"\bamala aşyryl", "padding",
+     "'amala aşyrylýar' is padding where a plain verb would do (geçirildi, edilýär, guraldy).", True),
+    (r"\bsiziň bilşiňiz ýaly", "wrong-reader",
+     "'Siziň bilşiňiz ýaly' introduces something the reader already knows (§23). Cut it and lead with the point.", False),
+    (r"\bsiz bu barada\b[^.!?]{0,60}\baýtdyňyz", "wrong-reader",
+     "Reminds the reader of what they said themselves (§23). Cut it.", False),
     (r"\bmöhüm rol(y)? oýna", "calque",
      "'rol oýnamak' is a Russian calque (играть роль). Try 'uly orun eýeleýär', 'täsir edýär', or say what it does.", False),
     (r"\btäze sahypa(ny)? açýar", "cliche",
@@ -298,6 +310,11 @@ def check_words(text, masked, allow, findings):
                 add(findings, text, pos, "warn", "turkish-word",
                     "Looks like a Turkish word, not Turkmen.", word, tk)
                 break
+
+        # Turkish potential mood: gowulaşabilir -> gowulaşyp biler
+        if re.search(r"[^\W\d_](a|e)bil(ir|iriz|irsiniz|irler|ecek|mek)$", low) and not low.startswith("kabil"):
+            add(findings, text, pos, "warn", "turkish-word",
+                "Turkish '-abilir/-ebilir'. Turkmen says '-yp biler' (gowulaşyp biler, gelip biler).", word)
 
         # Genitive written with n instead of ň (e.g. Türkmenistanyn)
         if len(low) > 5 and re.search(r"(nyn|nin)$", low):
@@ -474,6 +491,11 @@ def check_punctuation(text, findings, word_count):
             "%d long dashes in %d words. Turkmen uses the dash for specific jobs (dialogue, "
             "subject-predicate, apposition); elsewhere a comma, colon or full stop reads more naturally." %
             (dashes, word_count), "")
+
+    for m in re.finditer(r"[^\W\d_]+(['\u2019])(da|de|dan|den|a|e|y|i|yň|iň|nyň|niň|ny|ni|daky|däki|lar|ler)\b", masked_text(text)):
+        add(findings, text, m.start(), "warn", "apostrophe",
+            "Turkmen attaches endings without an apostrophe (Aşgabatda). For a foreign name, use a hyphen or rebuild the phrase.",
+            m.group(0))
 
     for m in re.finditer(r"[^\S\n]+[,.;:!?](?!\S*://)", text):
         add(findings, text, m.start(), "warn", "spacing",

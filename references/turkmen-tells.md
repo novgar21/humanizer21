@@ -91,6 +91,7 @@ Chains of four or more genitives (`ýurdumyzyň ykdysadyýetiniň pudaklarynyň 
 ## 5. Grammar slips
 
 - Plural after a number: `üç kitaplar → üç kitap`, `10 müň adamlar → 10 müň adam`.
+- Accusative on the subject of a passive verb: `12 sany kompýuteri oturdyldy → 12 sany kompýuter oturdyldy`, `karary kabul edildi → karar kabul edildi`. With a passive verb the thing acted on is the subject and stays in the base form; `-y/-i` there reads as "his/its computer" or as an object with no verb to take it. Check this whenever you turn a plural into a singular after a number.
 - Missing `n` after the 3rd person possessive: `welaýatyda → welaýatynda`, `kararyy → kararyny`.
 - Ordinals without the right suffix: `9-nji → 9-njy`, `6-nci → 6-njy`, `2025-njy → 2025-nji`.
 - Question particle written apart: `bilýärsiň mi → bilýärsiňmi`.

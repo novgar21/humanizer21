@@ -21,6 +21,8 @@ try {
   }
   assert.ok(!fs.existsSync(path.join(dest, "bin")), "bin/ must not be installed");
   assert.ok(!fs.existsSync(path.join(dest, "tests")), "tests/ must not be installed");
+  assert.ok(fs.existsSync(path.join(dest, "THIRD_PARTY_NOTICES.md")), "missing THIRD_PARTY_NOTICES.md");
+  assert.ok(!fs.existsSync(path.join(dest, "scripts", "validate-package.py")), "validate-package.py must not be installed");
 
   run("--zip", "out.zip");
   const zip = fs.readFileSync(path.join(tmp, "out.zip"));

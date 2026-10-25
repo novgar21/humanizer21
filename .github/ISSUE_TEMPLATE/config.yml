@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AI detectors still flag the output
+    url: https://github.com/novgar21/humanizer21#limitations
+    about: Getting past AI detectors is not a goal. humanizer21 edits for Turkmen readers.

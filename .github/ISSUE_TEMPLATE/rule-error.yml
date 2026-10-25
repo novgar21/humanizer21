@@ -1,0 +1,28 @@
+name: Wrong Turkmen rule
+description: A spelling, grammar, punctuation or word-choice rule in the references is wrong or incomplete.
+labels: ["turkmen-rule"]
+body:
+  - type: input
+    id: file
+    attributes:
+      label: File and section
+      placeholder: "references/orthography.md, section 4.1"
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What the rule says
+    validations:
+      required: true
+  - type: textarea
+    id: right
+    attributes:
+      label: What is correct, with examples
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      description: An Ene dilim page, a dictionary entry or another reference, if you have one.

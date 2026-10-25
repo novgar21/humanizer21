@@ -11,7 +11,7 @@ const zlib = require("zlib");
 const NAME = "humanizer21";
 const ROOT = path.resolve(__dirname, "..");
 const PKG = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
-const SKILL_ITEMS = ["SKILL.md", "LICENSE", "references", "scripts"];
+const SKILL_ITEMS = ["SKILL.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "references", "scripts/barla.py"];
 
 const HELP = `
 humanizer21 ${PKG.version} - Turkmen language humanizer

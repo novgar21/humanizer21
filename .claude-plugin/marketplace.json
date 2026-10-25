@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "humanizer21",
+  "owner": {
+    "name": "Novruz Garryyev",
+    "url": "https://github.com/novgar21"
+  },
+  "description": "Install humanizer21 as a Claude plugin.",
+  "plugins": [
+    {
+      "name": "humanizer21",
+      "source": "./",
+      "description": "Turkmen language humanizer. Edits and writes Turkmen text (türkmen dili, Latin script) so it reads like a literate native speaker wrote it, not a chatbot.",
+      "license": "MIT",
+      "keywords": [
+        "turkmen",
+        "turkmen-language",
+        "humanizer",
+        "proofreading",
+        "writing",
+        "editing"
+      ]
+    }
+  ]
+}

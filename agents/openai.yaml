@@ -1,0 +1,4 @@
+interface:
+  display_name: "humanizer21"
+  short_description: "Make Turkmen text read like a literate native speaker wrote it"
+  default_prompt: "Use $humanizer21 to remove AI tells and fix the Turkmen spelling of this text without changing its facts."

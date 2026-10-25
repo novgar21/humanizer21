@@ -5,7 +5,7 @@ barla.py - Turkmen text checker for the humanizer21 skill.
 Finds things a careful Turkmen editor would fix:
   * letters that do not exist in the Turkmen Latin alphabet (c, q, v, x, ı, ğ, İ)
   * Cyrillic letters mixed into Latin-script words
-  * "y" written where "ý" is needed (y directly before a vowel)
+  * "y" written where "ý" is needed (y next to another vowel: niyet, peydaly)
   * Turkish words used instead of Turkmen ones
   * front/back vowel harmony errors in plural suffixes (-lar/-ler)
   * stock phrases that make Turkmen text sound machine-written
@@ -103,7 +103,7 @@ AI_PHRASES = [
      "'Şuny bellemek gerek' announces a point instead of making it. State the point.", False),
     (r"\bbellemek gerek(dir)?\b", "filler",
      "'bellemek gerek' is a signpost; usually cut it.", True),
-    (r"\bgeliň,?(\s+\S+){0,4}?\s+(seredeliň|öwreneliň|düşüneliň|garalyň|başlalyň)", "staged-opener",
+    (r"\bgeliň,?(\s+\S+){0,4}?\s+\w+(?:alyň|eliň|lyň|liň)\b", "staged-opener",
      "'Geliň, ... seredeliň' is a chatbot run-up. Start with the fact.", False),
     (r"\b(gowy|ajaýyp|örän gowy) sorag", "chatbot-residue",
      "Chatbot praise of the question. Remove.", False),
@@ -230,12 +230,15 @@ def check_words(text, masked, allow, findings):
                     "Fine only in a foreign name kept in its original spelling." % ", ".join(foreign),
                     word)
 
-        # y directly before a vowel -> almost always ý
-        for ym in re.finditer(r"y(?=[aeäioöuü])", low):
-            add(findings, text, pos + ym.start(), "warn", "y-vs-ý",
-                "'y' before a vowel: Turkmen writes ý here (ýa, ýe, ýo, ýu...).", word,
+        # y next to another vowel -> almost always ý. "y" is itself a vowel, and
+        # Turkmen does not put two vowels side by side: niyet -> niýet,
+        # peydaly -> peýdaly, bay -> baý.
+        ym = (re.search(r"y(?=[aeäioöuü])", low)
+              or re.search(r"(?<=[aeäioöuü])y(?=[^aeäioöuüyý]|$)", low))
+        if ym:
+            add(findings, text, pos + ym.start(), "info" if is_cap else "warn", "y-vs-ý",
+                "'y' next to another vowel: Turkmen writes ý here (ýa, ýe, ýo, peýda, baý).", word,
                 word[:ym.start()] + ("Ý" if word[ym.start()] == "Y" else "ý") + word[ym.start() + 1:])
-            break
 
         # Turkish vocabulary
         for tr, (tk, is_stem) in TURKISH_WORDS.items():
@@ -278,6 +281,13 @@ UNIT_WORDS = {1: "bir", 2: "iki", 3: "üç", 4: "dört", 5: "bäş", 6: "alty", 
 TEN_WORDS = {1: "on", 2: "ýigrimi", 3: "otuz", 4: "kyrk", 5: "elli", 6: "altmyş", 7: "ýetmiş", 8: "segsen", 9: "togsan"}
 NUMBER_WORDS = set(UNIT_WORDS.values()) | set(TEN_WORDS.values()) | {"ýüz", "müň", "million", "milliard"}
 PLURAL_OK_AFTER_NUMBER = {"dollar", "dollary", "dollara", "dollarda", "dollardan"}
+# Words that may stand between a number and its noun (12 sany täze kompýuter).
+BETWEEN_NUMBER_AND_NOUN = {
+    "sany", "täze", "köne", "uly", "kiçi", "häzirki", "zaman", "gowy", "ýaş", "ak", "gara",
+    "gyzyl", "ýaşyl", "gök", "sary", "beýik", "giň", "uzyn", "gysga", "agyr", "ýeňil",
+    "ýokary", "pes", "daşary", "ýerli", "halkara", "tejribeli", "ökde", "hünärli", "zehinli",
+    "owadan", "arassa", "hususy", "umumy", "esasy", "goşmaça", "ätiýaçlyk", "elektron", "sanly",
+}
 
 
 def last_number_word(n):
@@ -308,7 +318,9 @@ def check_numbers(text, masked, findings):
                 m.group(0), "%s-%s" % (m.group(1), right))
     # Plural noun right after a cardinal number (üç kitaplar -> üç kitap)
     num = r"(?:\d[\d\s.,]*|%s)" % "|".join(sorted(NUMBER_WORDS, key=len, reverse=True))
-    for m in re.finditer(r"(?<![\w-])" + num + r"\s+(?:(?:müň|million|milliard)\s+)?([^\W\d_]+)", masked, re.IGNORECASE):
+    between = r"(?:(?:%s)\s+){0,3}" % "|".join(sorted(BETWEEN_NUMBER_AND_NOUN, key=len, reverse=True))
+    for m in re.finditer(r"(?<![\w-])" + num + r"\s+(?:(?:müň|million|milliard)\s+)?" + between + r"([^\W\d_]+)",
+                         masked, re.IGNORECASE):
         noun = m.group(1)
         low = norm_lower(noun)
         if low in PLURAL_OK_AFTER_NUMBER or low in NUMBER_WORDS:
@@ -366,7 +378,8 @@ def check_punctuation(text, findings, word_count):
         break  # one report is enough; the editor fixes all of them
 
     dashes = len(re.findall("[\u2014\u2013]", text))
-    if word_count and dashes >= 3 and dashes / word_count > 0.015:
+    if word_count and ((dashes >= 3 and dashes / word_count > 0.015)
+                       or (dashes >= 2 and dashes / word_count > 0.03)):
         add(findings, text, text.find("\u2014") if "\u2014" in text else text.find("\u2013"),
             "warn", "dashes",
             "%d long dashes in %d words. Turkmen uses the dash for specific jobs (dialogue, "

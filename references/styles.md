@@ -65,10 +65,10 @@ Hormat bilen,
 
 - Short sentences, concrete detail, one idea per post.
 - A direct address to readers is natural (`Siz näme pikir edýärsiňiz?`) once, at the end.
-- Emoji: zero to two, only if the account uses them. Never one per line.
+- Emoji: none by default. Keep them only when the user asks or gives a sample post that uses them, and then at the sample's rate. Never one per line. (See `ai-patterns.md` §17.)
 - No headings, no bold labels with colons, no list of "tips" when two sentences would do.
 - Choose `sen` or `siz` by the audience and keep it.
-- Do not strip a post to a dry list of facts. Speaking to the reader is part of the genre: `Filmleri «Watan» kinoteatrynda görüp bilersiňiz` is a natural way to give the same fact. What you must not do is add claims or calls the source does not have (`gelmegi unutmaň!`, "the best festival of the year"). If a call to action would help, suggest it in your note instead of writing it into the post.
+- Do not strip a post to a dry list of facts. Speaking to the reader is part of the genre: `Filmleri «Watan» kinoteatrynda görüp bilersiňiz` is a natural way to give the same fact. What you must not do is add a sentence the source does not have: no new claims, no calls to action (`gelmegi unutmaň!`), no encouragement (`Başlamak kyn däl.`), no "the best festival of the year". If a call to action would help, suggest it in your note instead of writing it into the post.
 - Avoid the same noun in two neighbouring sentences; Turkmen links sentences with `ol`, `onda`, `oňa` or a synonym.
 
 ## 5. Messages and chat

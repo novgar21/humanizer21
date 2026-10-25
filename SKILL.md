@@ -4,7 +4,7 @@ description: Turkmen language humanizer. Edits and writes Turkmen text (türkmen
 license: MIT
 metadata:
   author: Novruz Garryyev
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # humanizer21
@@ -26,6 +26,12 @@ A text that fixes only the first group still reads as machine-made to a Turkmen 
 - **The conversation language is the user's choice.** Answer in the language the user writes to you in (Turkmen, Russian, English or Turkish); the edited text stays in the language it is written in, unless the user asks for a translation.
 - **Russian, English and Turkish text** get the same anti-AI treatment (`references/ai-patterns.md`, plus the language notes in `references/styles.md`, section 7). Skip the Turkmen-specific checks for them. In particular, never "correct" a Turkish text towards Turkmen: Turkish words are errors only inside Turkmen text.
 - Run `scripts/barla.py` only on Turkmen text.
+
+## Voice
+
+If the user gives a sample of their own writing (two or three paragraphs, or earlier news items of their outlet), read it before editing and match it: sentence length, word choice, punctuation, how paragraphs open, which formulas recur, whether emoji or dashes appear. The sample overrides the defaults in this skill, including the dash and emoji rules.
+
+Without a sample, take the voice from the genre (`references/styles.md`). News and documents stay neutral and keep their formulas. Posts, letters and essays keep the writer's opinions, doubts and asides. Removing tells is half the job; the result must still sound like a person.
 
 ## Workflow
 
@@ -50,15 +56,15 @@ It flags non-Turkmen letters, `y`/`ý` slips, Turkish words, plural harmony erro
 
 ### 3. Remove the AI tells
 
-Read `references/ai-patterns.md`. The strongest tells, acted on at first sight:
+Read `references/ai-patterns.md`. Its 23 patterns are numbered strongest first; §1 to §5 and §20 to §22 justify an edit on one sighting, and a pattern marked *weak alone* needs company. Mark every tell in the whole text before you change anything, and look at paragraph shape as well as sentences. The ones you will meet most:
 
-- chatbot wrappers: `Elbetde!`, `Gowy sorag!`, `Umyt edýärin, bu size kömek eder`, `Başga soragyňyz bar bolsa...`
-- announcing instead of stating: `Şuny bellemek gerek, ...`, `Geliň, ... seredeliň`, `Ýokarda agzalanlardan görnüşi ýaly`
-- empty contrast: `bu diňe bir X däl, eýsem Y` outside official prose
-- a final paragraph that only repeats the text (`Netijede, ...`, `Jemläp aýtsak, ...`) in a short piece
-- inflation: `täze sahypa açýar`, `möhüm ädim`, `ýol açýar`, `ajaýyp mümkinçilik` attached to an ordinary fact
-- connector chains: almost every sentence opening with `Şeýle hem`, `Mundan başga`, `Bu bolsa`
-- formatting by reflex: bold labels with colons, emoji, headings on a three-paragraph text
+- chatbot wrappers (§20): `Elbetde!`, `Gowy sorag!`, `Umyt edýärin, bu size kömek eder`, `Başga soragyňyz bar bolsa...`
+- announcing instead of stating (§4): `Şuny bellemek gerek, ...`, `Geliň, ... seredeliň`, `Size bu haty ýazmagymyň sebäbi şundan ybarat`
+- empty contrast (§1): `bu diňe bir X däl, eýsem Y` outside official prose
+- summary closers (§2): `Netijede, ...`, `Jemläp aýtsak, ...` in a short piece
+- inflation (§12, §13): `täze sahypa açýar`, `möhüm ädim`, `ýol açýar`, `ajaýyp mümkinçilik`
+- connector chains (§7): almost every sentence opening with `Şeýle hem`, `Mundan başga`, `Bu bolsa`
+- formatting by reflex (§17): bold labels with colons, headings on a short text, and emoji, which are removed by default in every genre unless the user asks for them or their sample uses them
 
 ### 4. Fix Turkish and Russian interference
 
@@ -89,17 +95,20 @@ Do not guess a spelling and present it as certain. When a word or form is doubtf
 - If you can browse, open the dictionary entry `https://enedilim.com/sozluk/soz/<word>` (the word URL-encoded, dictionary form) or the online checker `https://enedilim.com/gurallar/yazuw_barlayjy`.
 - If you cannot browse, keep the most common form you know and list the word under "to verify" in your note to the user.
 
-### 7. Read the result once more
+### 7. Audit the draft before you return it
 
-- Did any fact, name, number, date, title or quote change, appear or disappear? That is an error.
-- Read it as a Turkmen reader would. Does any sentence still sound translated? Rebuild it around its verb.
-- Vary sentence length. Short and long sentences alternating sound human; ten sentences of the same length do not.
-- Do not over-trim. A text stripped to bare telegram style, or one that repeats the same noun in neighbouring sentences (`Filmler ... Filmler ...`), also reads as machine-made. Use a pronoun, a synonym or a merged sentence, and keep the warmth the genre expects.
-- Run `barla.py` again on the final text if you can.
+Write a draft, then check it in two passes before writing the final version.
+
+**Pass 1: facts, sentence by sentence.** For every sentence of the draft, name the sentence of the source it comes from. A sentence with no source is an error; delete it, even if it is harmless encouragement such as `Başlamak kyn däl.` or `Gelmegi unutmaň!`. Then go the other way: every fact, name, number, date, title and quote of the source must still be in the draft, unless a pattern required cutting it. Shape edits (merging sentences, cutting triads, rebuilding a paragraph) lose facts most often.
+
+**Pass 2: what still sounds machine-made?** Ask the question honestly and list the answers for yourself. Search again for the tells that most often survive a rewrite: §1 contrasts, §2 closers, §6 triads, §8 dashes, §17 emoji and bold labels, and any Turkish word. Read it as a Turkmen reader would; if a sentence still sounds translated, rebuild it around its verb.
+
+Then write the final version. State each point naturally instead of patching flagged phrases one by one. Vary sentence length. Do not over-trim: a text stripped to telegram style, or one that repeats the same noun in neighbouring sentences (`Filmler ... Filmler ...`), also reads as machine-made; use a pronoun, a synonym or a merged sentence. Run `barla.py` again on the final text if you can.
 
 ## What to return
 
-- **Default:** the final text first. Then a short list of the main changes (5 to 10 lines at most), written in the language the user used to talk to you, plus any words left "to verify".
+- **Default:** the final text first. Then a short list of the main changes (5 to 10 lines at most), written in the language the user used to talk to you, plus any words left "to verify" and any detail you had to drop or would like the user to supply.
+- **"Show your work":** when the user asks how you got there, return the draft, the list of tells that survived it, and the final text.
 - **File given:** write the final text to a new file next to the original (keep the original), then give the short summary.
 - **Inside another task** (a post, a letter, a document you are producing anyway): return only the final text.
 - **"Only check, do not rewrite":** return the list of problems with line references and suggested fixes, nothing else.
@@ -118,4 +127,5 @@ When you write from scratch, the same rules apply before the text exists:
 
 - This skill improves text. It cannot certify that a text will pass an "AI detector"; those tools are unreliable for Turkmen.
 - Rules here are summarized in our own words from enedilim.com, used with the permission of the Ene dilim project, plus general knowledge of Turkmen. For a disputed spelling, the orthographic dictionary on enedilim.com is the authority.
+- The general AI patterns and the draft-audit-final workflow are adapted from Humanizer by Siqi Chen (MIT); see `THIRD_PARTY_NOTICES.md`.
 - Text written in Turkmen Cyrillic: convert to Latin only if the user asks; otherwise edit it in Cyrillic using the same grammar.

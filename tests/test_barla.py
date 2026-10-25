@@ -26,6 +26,14 @@ class TestLetters(unittest.TestCase):
         fixes = [f.get("suggestion") for f in result["findings"] if f["category"] == "y-vs-ý"]
         self.assertEqual(fixes, ["niýetlenen"])
 
+    def test_y_after_vowel_before_consonant(self):
+        fixes = [f.get("suggestion") for f in barla.run("Bu örän peydaly, bay obada.")["findings"]
+                 if f["category"] == "y-vs-ý"]
+        self.assertEqual(fixes, ["peýdaly", "baý"])
+
+    def test_correct_y_words_are_clean(self):
+        self.assertNotIn("y-vs-ý", cats("Köp ýöreýän adamlar baý obada çaý içýärler. Goýy gök. Taýyn."))
+
     def test_mixed_script(self):
         # Cyrillic small a (U+0430) inside a Latin word
         self.assertIn("mixed-script", cats("Aşg\u0430bat"))
@@ -62,12 +70,22 @@ class TestNumbers(unittest.TestCase):
         self.assertIn("plural-after-number", cats("Topara 40 talyplar gatnaşdy."))
         self.assertNotIn("plural-after-number", cats("Topara 40 talyp gatnaşdy. Bahasy 100 dollar."))
 
+    def test_plural_after_number_with_adjectives(self):
+        found = [f["text"] for f in barla.run("6 täze mikrofonlar we 12 sany häzirki zaman kompýuterler")["findings"]
+                 if f["category"] == "plural-after-number"]
+        self.assertEqual(found, ["mikrofonlar", "kompýuterler"])
+        self.assertNotIn("plural-after-number", cats("5 ýyldan bäri adamlar gelýär."))
+
 
 class TestPhrasesAndPunctuation(unittest.TestCase):
     def test_chatbot_residue(self):
         c = cats("Gowy sorag! Geliň, bu meselä seredeliň.\n\nUmyt edýärin, bu size kömek eder!")
         self.assertGreaterEqual(c.count("chatbot-residue"), 2)
         self.assertIn("staged-opener", c)
+        self.assertIn("staged-opener", cats("Geliň, sagdyn durmuş barada gürleşeliň."))
+
+    def test_dashes_in_short_text(self):
+        self.assertIn("dashes", cats("Işe pyýada gidiň \u2014 basgançakdan peýdalanyň \u2014 agşamlar gezelenç ediň."))
 
     def test_quotes(self):
         self.assertIn("quotes", cats('Ol "Watan" kinoteatryna gitdi.'))

@@ -88,6 +88,11 @@ class TestPhrasesAndPunctuation(unittest.TestCase):
         self.assertIn("staged-opener", c)
         self.assertIn("staged-opener", cats("Geliň, sagdyn durmuş barada gürleşeliň."))
 
+    def test_phrases_inside_quotes_are_skipped(self):
+        quoted = "Ol şeýle diýdi: «Olar diňe bir meseleleri çözmekde däl, eýsem düşündirmekde hem ökde»."
+        self.assertNotIn("not-x-but-y", cats(quoted))
+        self.assertIn("not-x-but-y", cats("Bu diňe bir bina däl, eýsem merkez."))
+
     def test_dashes_in_short_text(self):
         self.assertIn("dashes", cats("Işe pyýada gidiň \u2014 basgançakdan peýdalanyň \u2014 agşamlar gezelenç ediň."))
 

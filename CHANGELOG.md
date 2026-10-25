@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3
+
+- A person's title, role or relation to an event must come word for word from the source. A vague `bilen baglanyşykly` stays vague and the user is asked, instead of becoming a role such as `eminler toparyndan`. Added to the audit, to §14 with this example, and to the one-file prompt. Found in a test where the skill made a teacher a member of the jury.
+- `barla.py` no longer flags AI phrases inside «...» quotations, since quoted words belong to someone else.
+
 ## 1.1.2
 
 - `barla.py` no longer reads `bir` in `diňe bir`, `her bir`, `hiç bir`, `ýene bir` and `haýsy bir` as the number one, so `diňe bir meseleleri` is not reported as a plural after a number.

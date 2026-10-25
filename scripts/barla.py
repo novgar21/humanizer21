@@ -384,7 +384,8 @@ def check_numbers(text, masked, findings):
 
 def check_phrases(text, findings):
     low = norm_lower(text)
-    taken = []  # spans already reported by a stronger pattern
+    # Words inside «...» belong to someone else; never flag them as AI phrases.
+    taken = [(m.start(), m.end()) for m in re.finditer(r"«[^»]*»", text)]
     for pattern, cat, msg, weak in sorted(AI_PHRASES, key=lambda e: e[3]):
         for m in re.finditer(pattern, low, re.MULTILINE):
             if any(m.start() < e and m.end() > b for b, e in taken):

@@ -132,11 +132,17 @@ The fact underneath is usually sound. Keep it and remove the dressing.
 ### 14. Vague connection
 
 **Watch for:** `bilen bagly`, `bilen baglanyşykly`, `bilen gatnaşykly` where the source gives the actual relation.
-**Problem:** the reader cannot tell whether the person founded, leads or merely attended. Name the relation the source gives. If the source does not say, keep the vague wording rather than invent a role.
+**Problem:** the reader cannot tell whether the person founded, leads or merely attended. Name the relation the source gives. If the source does not say, keep the vague wording and ask the user in your notes what the relation is. Turning `bilen baglanyşykly` into a role (`eminler toparyndan`, `ýolbaşçysy`, `guramaçysy`) is inventing a fact, and in news it is the most dangerous kind: a wrong title next to a real name.
 
 > Before (source says he leads it): Ol bu taslama bilen baglanyşykly.
 >
 > After: Ol bu taslamanyň ýolbaşçysy.
+
+> Before (source gives no role): Mugallym Aýgül Orazowa olimpiadanyň eminler topary bilen baglanyşykly.
+>
+> Wrong: Eminler toparyndan mugallym Aýgül Orazowa ...
+>
+> Right: Olimpiada bilen baglanyşykly mugallym Aýgül Orazowa ... (note to the user: "the source does not say what her role was; tell me if she was a judge, an organizer or a coach")
 
 ### 15. Borrowed authority
 

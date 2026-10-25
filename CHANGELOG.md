@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.4
+
+- `barla.py` now catches an ending that breaks harmony after the plural (`mekdeplerda` → `mekdeplerde`), knowledge-limit wording before a guess (`Elimdäki maglumatlara görä`, §21), and Markdown headings that capitalize every word. The emoji note no longer makes an exception for social posts.
+- Added a test corpus in `tests/corpus/`: five machine-written Turkmen texts (news, posts, an article) with the facts that must survive, the tells and errors that must go, and an accepted result for each. `tests/grade.py` grades any result against a case; the corpus tests run on every push. The grader catches each mistake earlier versions made: the invented jury role, the softened sayings and unnamed experts, and `kompýuteri oturdyldy`.
+
 ## 1.1.3
 
 - A person's title, role or relation to an event must come word for word from the source. A vague `bilen baglanyşykly` stays vague and the user is asked, instead of becoming a role such as `eminler toparyndan`. Added to the audit, to §14 with this example, and to the one-file prompt. Found in a test where the skill made a teacher a member of the jury.

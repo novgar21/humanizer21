@@ -53,6 +53,18 @@ class TestWords(unittest.TestCase):
         self.assertIn("harmony", cats("Täze kompýuterlar geldi."))
         self.assertNotIn("harmony", cats("Täze kompýuterler we kitaplar geldi."))
 
+    def test_harmony_after_plural(self):
+        self.assertIn("harmony", cats("Ähli mekdeplerda Wi-Fi bar."))
+        self.assertIn("harmony", cats("Kitaplerde ýazylan."))
+        self.assertNotIn("harmony", cats("Ähli mekdeplerde we kitaplarda bar."))
+
+    def test_knowledge_limit(self):
+        self.assertIn("knowledge-limit", cats("Elimdäki maglumatlara görä, takyk bahasy ýok."))
+
+    def test_title_case_heading(self):
+        self.assertIn("formatting", cats("## Sanly Bilimiň Täze Döwri\nTekst."))
+        self.assertNotIn("formatting", cats("## Sanly bilimiň täze döwri\nAşgabat şäheri."))
+
     def test_genitive_n(self):
         self.assertIn("n-vs-ň", cats("Türkmenistanyn paýtagty"))
 

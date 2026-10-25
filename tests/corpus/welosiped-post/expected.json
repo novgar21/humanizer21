@@ -1,0 +1,36 @@
+{
+  "request": "Instagram üçin post, adam eli bilen ýazylan ýaly et, emeli aň yzlaryny aýyr:",
+  "must_keep": [
+    "Mary",
+    "welosiped",
+    "12 kilometr",
+    "üç täze seýilgäh",
+    "kireý nokady",
+    "150 welosiped",
+    "200 agaç",
+    "2026-njy ýylyň 1-nji oktýabryn",
+    "YouTube"
+  ],
+  "must_not": [
+    "velosiped",
+    "Elbetde",
+    "Geliň",
+    "**",
+    "için",
+    "peydaly",
+    "2026-nji",
+    "velosipedler",
+    "agaçlar",
+    "agajy",
+    "Käbirleri",
+    "pikir edýänler",
+    "açary",
+    "Hünärmen",
+    "Netijede",
+    "täze sahypa",
+    "—",
+    "🚲",
+    "Gelmegi unutmaň",
+    "Başlamak kyn däl"
+  ]
+}

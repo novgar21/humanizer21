@@ -114,6 +114,8 @@ for path in ROOT.rglob("*"):
         continue
     if path.suffix not in {".md", ".py", ".js", ".json", ".yml", ".yaml", ".txt"}:
         continue
+    if path.name == "input.txt" and "corpus" in path.parts:
+        continue  # test inputs carry hidden characters on purpose
     if invisible.search(path.read_text(encoding="utf-8")):
         errors.append("invisible character in %s" % path.relative_to(ROOT))
 

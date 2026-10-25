@@ -29,6 +29,7 @@ humanizer21 is an agent skill written in Markdown, with one Python checker and a
 - **Length.** `SKILL.md` stays under 2,500 words; detail goes into `references/`.
 - **Facts.** Examples in the references must never add a fact in the "after" text that the "before" text lacks.
 - **Checker.** Every new check in `barla.py` gets a test in `tests/test_barla.py`, including a test that correct text stays clean.
+- **Corpus.** When a rewrite goes wrong in a way the rules should have prevented, add the text to `tests/corpus/` as a new case with `input.txt`, `expected.json` and a corrected `reference.txt`. Run `python3 tests/grade.py` on the skill's next answer before releasing a fix.
 - **History.** Add a `CHANGELOG.md` note for any change in behavior.
 
 ## Checks before publishing

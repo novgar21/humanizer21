@@ -100,6 +100,12 @@ TURKISH_WORDS = {
 # Each entry: (regex, category, message, weak)
 # weak=True means "only a problem when other tells are present".
 AI_PHRASES = [
+    (r"\b(elimdäki|bar bolan) maglumatlara görä", "knowledge-limit",
+     "The text talks about the writer's own knowledge, usually before a guess. State what the source shows or cut the sentence and any guess after it.", False),
+    (r"\bsoňky täzelenmä çenli", "knowledge-limit",
+     "Knowledge-cutoff wording from a chatbot. Cut it.", False),
+    (r"\b(jikme-jik|takyk) maglumat ýok,? ýöne", "knowledge-limit",
+     "'No exact data, but...' introduces a guess. Cut the guess.", False),
     (r"\bşuny bellemek (gerek|zerur|möhüm)", "filler",
      "'Şuny bellemek gerek' announces a point instead of making it. State the point.", False),
     (r"\bbellemek gerek(dir)?\b", "filler",
@@ -316,6 +322,17 @@ def check_words(text, masked, allow, findings):
                         add(findings, text, pos, "warn", "harmony",
                             "Stem ends in a back vowel (%s), so the plural is -lar, not -ler." % v,
                             word)
+                    else:
+                        # The ending after the plural follows the plural: -lerde, -larda.
+                        tail_vowels = set(tail) & VOWELS
+                        if sfx == "ler" and tail_vowels & BACK_VOWELS:
+                            add(findings, text, pos, "warn", "harmony",
+                                "After -ler the ending must be front too (-lerde, -lerden, -leri), not -%s." % tail,
+                                word)
+                        elif sfx == "lar" and tail_vowels & FRONT_VOWELS:
+                            add(findings, text, pos, "warn", "harmony",
+                                "After -lar the ending must be back too (-larda, -lardan, -lary), not -%s." % tail,
+                                word)
                     break
             else:
                 continue
@@ -395,6 +412,22 @@ def check_phrases(text, findings):
                 text[m.start():m.end()])
 
 
+SMALL_WORDS = {"we", "hem", "bilen", "üçin", "ýa-da", "ýa", "-da", "-de", "barada"}
+
+
+def check_headings(text, findings):
+    """Markdown headings with Every Main Word Capitalized."""
+    for m in re.finditer(r"(?m)^#{1,6}[ \t]+(.+)$", text):
+        words = [w for w in WORD_RE.findall(m.group(1))]
+        if len(words) < 2:
+            continue
+        rest = [w for w in words[1:] if norm_lower(w) not in SMALL_WORDS]
+        if rest and all(w[0].isupper() for w in rest):
+            add(findings, text, m.start(), "info", "formatting",
+                "Heading capitalizes every word. Turkmen headings capitalize only the first word and names.",
+                m.group(1).strip()[:60])
+
+
 def check_connectors(text, findings, word_count):
     low = norm_lower(text)
     total = 0
@@ -458,7 +491,7 @@ def check_punctuation(text, findings, word_count):
     emoji = re.findall(r"[\U0001F300-\U0001FAFF☀-➿]", text)
     if emoji:
         add(findings, text, text.find(emoji[0]), "info", "formatting",
-            "%d emoji found. Remove unless the genre (social post) calls for them." % len(emoji), "")
+            "%d emoji found. Remove them unless the user asked for emoji or their own sample uses them." % len(emoji), "")
 
 
 def run(text, allow=()):
@@ -469,6 +502,7 @@ def run(text, allow=()):
     check_words(text, masked, allow, findings)
     check_numbers(text, masked, findings)
     check_phrases(text, findings)
+    check_headings(text, findings)
     check_connectors(text, findings, word_count)
     check_punctuation(text, findings, word_count)
     order = {"error": 0, "warn": 1, "info": 2}

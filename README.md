@@ -192,7 +192,9 @@ scripts/barla.py                 the checker
 prompts/system-prompt.md         one-file version for other assistants
 bin/install.js                   the npx installer
 scripts/validate-package.py      package check: versions, manifests, pattern numbers, sizes
-tests/                           tests for the checker and the installer
+tests/                           tests for the checker, the installer and the corpus
+tests/corpus/                    five test texts with expected results
+tests/grade.py                   grades a result against a corpus case
 .claude-plugin/                  Claude Code plugin and marketplace manifests
 CHANGELOG.md                     what changed in each version
 AGENTS.md                        rules for contributors and coding agents
@@ -200,6 +202,16 @@ THIRD_PARTY_NOTICES.md           credits and licenses of the work this builds on
 ```
 
 Run `npm test` and `python3 scripts/validate-package.py` before a pull request. GitHub runs both on every push.
+
+### Test corpus
+
+`tests/corpus/` holds five machine-written Turkmen texts: news items, social posts and a website article. Each case has the input, the request, a list of facts that must survive and of tells and errors that must disappear, and an accepted result. To check how the skill did on a case, save its answer to a file and run:
+
+```bash
+python3 tests/grade.py tests/corpus/olimpiada-habary answer.txt
+```
+
+Every line of the output is a check; the last line is the score. A new tell or a new mistake belongs in the corpus as a new case.
 
 ## Sources
 

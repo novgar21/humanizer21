@@ -161,7 +161,10 @@ python3 scripts/barla.py text.txt
 python3 scripts/barla.py text.txt --json
 python3 scripts/barla.py text.txt --allow "Coca-Cola,Microsoft"
 cat text.txt | python3 scripts/barla.py -
+python3 scripts/barla.py text.txt --fix -o clean.txt
 ```
+
+`--fix` removes characters a reader cannot see: zero-width spaces, soft hyphens, direction marks and Unicode tag characters, and turns non-breaking, thin and wide spaces into normal ones. Text pasted from chat windows, PDFs and web pages often carries them, and they break site search, line breaks and character counts. Letters, punctuation and line breaks stay as they are.
 
 Sample output:
 

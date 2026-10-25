@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.1
+
+- The draft audit now says what counts as a fact: something a reader could check (a name, number, date, place, event, or a quote of a named person). Sayings, answers to an objection nobody raised and claims of unnamed experts are not facts; §3, §5 and §15 cut them instead of softening them, and every such cut is listed in the notes to the user. Found in a test where `Endik — saglygyň açary`, `... diýip pikir edýänler hem bar` and `Hünärmenleriň pikiriçe` survived in a softer form.
+- The audit also checks that every sentence keeps a clear subject after the sentence before it is cut (`Ýodalaryň ugrunda`, not `Ugrunda`).
+- `barla.py --fix` removes invisible characters (zero-width spaces, soft hyphens, direction marks, Unicode tag characters) and turns unusual spaces into normal ones; `-o` writes the cleaned text to a file. Detection now also covers tag characters, direction overrides and thin or wide spaces.
+
 ## 1.1.0
 
 - Reorganized the AI patterns into 23 numbered patterns in six sections, strongest first, with a *weak alone* rule for tells that prove nothing on their own. Added seven patterns with Turkmen examples: sayings that sound deep (§3), arguing with no one (§5), stacked qualifiers (§9), vague connection (§14), a heading repeated in the first sentence (§18), writing about the document (§22) and re-explaining what the reader knows (§23).

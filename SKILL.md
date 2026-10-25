@@ -4,7 +4,7 @@ description: Turkmen language humanizer. Edits and writes Turkmen text (türkmen
 license: MIT
 metadata:
   author: Novruz Garryyev
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # humanizer21
@@ -50,6 +50,7 @@ Then pick the register, because it decides which "tells" are actually tells. Rea
 ```bash
 python3 scripts/barla.py input.txt          # human-readable report
 python3 scripts/barla.py input.txt --json   # machine-readable
+python3 scripts/barla.py input.txt --fix -o clean.txt   # also remove invisible characters
 ```
 
 It flags non-Turkmen letters, `y`/`ý` slips, Turkish words, plural harmony errors, stock AI phrases, overused connectors, quotation marks, dashes, spacing and invisible Unicode characters. It is a pointer, not a judge: a foreign brand name may keep its `c` or `v`, and `diňe bir ... däl, eýsem ...` is normal in official prose. If you cannot run code, go through the same list by eye using the reference files.
@@ -99,9 +100,9 @@ Do not guess a spelling and present it as certain. When a word or form is doubtf
 
 Write a draft, then check it in two passes before writing the final version.
 
-**Pass 1: facts, sentence by sentence.** For every sentence of the draft, name the sentence of the source it comes from. A sentence with no source is an error; delete it, even if it is harmless encouragement such as `Başlamak kyn däl.` or `Gelmegi unutmaň!`. Then go the other way: every fact, name, number, date, title and quote of the source must still be in the draft, unless a pattern required cutting it. Shape edits (merging sentences, cutting triads, rebuilding a paragraph) lose facts most often.
+**Pass 1: facts, sentence by sentence.** For every sentence of the draft, name the sentence of the source it comes from. A sentence with no source is an error; delete it, even if it is harmless encouragement such as `Başlamak kyn däl.` or `Gelmegi unutmaň!`. Then go the other way: every fact of the source must still be in the draft. A fact is something a reader could check: a name, number, date, place, event, title, or a quote attributed to a named person. Opinions, slogans and sayings (`Endik — saglygyň açary`), answers to an objection nobody raised (`Käbirleri ... diýip pikir edip biler, ýöne ...`) and claims of unnamed experts (`Hünärmenleriň pikiriçe ...`) are not facts to preserve; §3, §5 and §15 tell you to cut or rewrite them, and softening them is not enough. List every such cut in your notes to the user, so they can put it back as a named quote if they have a source. Shape edits (merging sentences, cutting triads, rebuilding a paragraph) lose real facts most often.
 
-**Pass 2: what still sounds machine-made?** Ask the question honestly and list the answers for yourself. Search again for the tells that most often survive a rewrite: §1 contrasts, §2 closers, §6 triads, §8 dashes, §17 emoji and bold labels, and any Turkish word. Read it as a Turkmen reader would; if a sentence still sounds translated, rebuild it around its verb.
+**Pass 2: what still sounds machine-made?** Ask the question honestly and list the answers for yourself. Search again for the tells that most often survive a rewrite: §1 contrasts, §2 closers, §3 sayings, §5 answers to nobody, §6 triads, §8 dashes, §15 unnamed experts, §17 emoji and bold labels, and any Turkish word. A tell you only softened is still a tell. Check also that every sentence still has a clear subject after you cut the one before it (`Ugrunda 200 agaç oturdyldy` needs `Ýodalaryň ugrunda`). Read it as a Turkmen reader would; if a sentence still sounds translated, rebuild it around its verb.
 
 Then write the final version. State each point naturally instead of patching flagged phrases one by one. Vary sentence length. Do not over-trim: a text stripped to telegram style, or one that repeats the same noun in neighbouring sentences (`Filmler ... Filmler ...`), also reads as machine-made; use a pronoun, a synonym or a merged sentence. Run `barla.py` again on the final text if you can.
 

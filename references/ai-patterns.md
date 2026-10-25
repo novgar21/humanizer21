@@ -40,7 +40,7 @@ The strongest and most frequent tells. The sentence signals importance instead o
 ### 3. Sayings that sound deep
 
 **Watch for:** `Esasy mesele şunda`, `Hakykatda iň möhüm zat`, `Meseläniň düýbi`, `X — Y-iň açary`, `X — Y-iň dili`, `X tora öwrülýär`, aphorisms with a dash in the middle.
-**Problem:** an ordinary point is dressed as a hidden truth. Replace the saying with the specific claim.
+**Problem:** an ordinary point is dressed as a hidden truth. Replace the saying with the specific claim, or cut it if there is no claim under it. Rewording the saying (`endik bolsa saglygyň açary`) keeps the tell. A saying is not a fact, so cutting it does not break the rule against losing facts; mention the cut in your notes.
 
 > Before: Esasy mesele tehnikada däl. Hakykatda, iň möhüm zat — adamlaryň oňa ynanmagy. Ynam — üstünligiň açary.
 >
@@ -58,7 +58,7 @@ The strongest and most frequent tells. The sentence signals importance instead o
 ### 5. Arguing with no one
 
 **Watch for:** `Bu ýerde gürrüň ... barada däl`, `Ýalňyş düşünilmesin`, `Käbirleri ... diýip pikir edip biler, ýöne ...`, `Ilkinji pikir ... bolup biler, emma ...`, `Elbetde, ... diýip bolmaz`.
-**Problem:** the text answers an objection nobody raised, often a leftover from an earlier draft. Remove the defense; if it holds a real claim, state the claim.
+**Problem:** the text answers an objection nobody raised, often a leftover from an earlier draft. Remove the defense; if it holds a real claim, state the claim. Softening it (`... diýip pikir edýänler hem bar. Emma ...`) keeps the tell.
 
 > Before: Bu ýerde gürrüň diňe bahalar barada däl. Käbirleri täze tarifler gymmat diýip pikir edip biler, ýöne mesele başgada. Täze tarifler 1-nji ýanwardan güýje girýär.
 >
@@ -141,7 +141,11 @@ The fact underneath is usually sound. Keep it and remove the dressing.
 ### 15. Borrowed authority
 
 **Watch for:** `Hünärmenleriň pikiriçe`, `Barlaglar görkezýär`, `Köp adamlar şeýle hasaplaýar`, `Alymlar tassyklaýar` with no one named.
-**Problem:** an unnamed authority props up a claim. If the source names the expert or study, name them. Otherwise state the claim with the certainty the source supports, or cut it.
+**Problem:** an unnamed authority props up a claim. If the source names the expert or study, name them. Otherwise cut the attribution and either drop the claim or keep it only as plainly uncertain without borrowed weight, and tell the user in your notes that a named source would let it back in. Keeping `Hünärmenleriň pikiriçe` without a name keeps the tell.
+
+> Before: Hünärmenleriň pikiriçe, taslama şäheriň ekologiýasyna oňyn täsir edip biler.
+>
+> After: (cut; note to the user: "the expert claim was removed; add it back as a quote if you can name the expert")
 
 ### 16. Bureaucratic padding
 

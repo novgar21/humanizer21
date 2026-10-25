@@ -18,6 +18,7 @@ official formula).
 
 Usage:
     python3 barla.py text.txt
+    python3 barla.py text.txt --fix -o clean.txt   (remove invisible characters)
     python3 barla.py text.txt --json
     cat text.txt | python3 barla.py -
     python3 barla.py text.txt --allow "Coca-Cola,Microsoft"
@@ -157,7 +158,52 @@ INVISIBLE = {
     "\u202f": "narrow no-break space",
     "\u2028": "line separator",
     "\u2029": "paragraph separator",
+    "\u180e": "Mongolian vowel separator",
+    "\u2061": "invisible function application",
+    "\u2062": "invisible times",
+    "\u2063": "invisible separator",
+    "\u2064": "invisible plus",
+    "\u202a": "left-to-right embedding",
+    "\u202b": "right-to-left embedding",
+    "\u202c": "pop directional formatting",
+    "\u202d": "left-to-right override",
+    "\u202e": "right-to-left override",
+    "\u2066": "left-to-right isolate",
+    "\u2067": "right-to-left isolate",
+    "\u2068": "first strong isolate",
+    "\u2069": "pop directional isolate",
 }
+# Unicode tag characters (U+E0000 to U+E007F) are invisible and can carry hidden text.
+TAG_RE = re.compile("[\U000e0000-\U000e007f]")
+# Spaces that look normal but are not U+0020.
+ODD_SPACES_RE = re.compile("[\u00a0\u2000-\u200a\u202f\u205f\u3000]")
+
+
+def clean_text(text):
+    """Remove invisible characters and replace unusual spaces with normal ones.
+
+    Returns the cleaned text and a dict of counts. Only characters a reader
+    cannot see are touched; letters, punctuation and line breaks stay as they are.
+    """
+    counts = {"invisible": 0, "tag": 0, "spaces": 0}
+    out = []
+    for ch in text:
+        if ch in ("\u2028", "\u2029"):
+            out.append("\n")
+            counts["invisible"] += 1
+        elif ch == "\u202f":
+            out.append(" ")
+            counts["spaces"] += 1
+        elif ch in INVISIBLE:
+            counts["invisible"] += 1
+        elif TAG_RE.match(ch):
+            counts["tag"] += 1
+        elif ODD_SPACES_RE.match(ch):
+            out.append(" ")
+            counts["spaces"] += 1
+        else:
+            out.append(ch)
+    return "".join(out), counts
 
 PLURAL_TAILS = [
     "", "y", "i", "a", "e", "da", "de", "dan", "den", "dyr", "dir",
@@ -366,10 +412,15 @@ def check_punctuation(text, findings, word_count):
             add(findings, text, m.start(), "error", "invisible-char",
                 "Invisible character: %s (U+%04X). Delete it." % (name, ord(ch)), repr(ch))
 
-    nbsp = text.count("\u00a0")
-    if nbsp:
-        add(findings, text, text.find("\u00a0"), "info", "invisible-char",
-            "%d non-breaking space(s). Usually harmless; replace with normal spaces if the text came from a chatbot." % nbsp,
+    tags = TAG_RE.findall(text)
+    if tags:
+        add(findings, text, TAG_RE.search(text).start(), "error", "invisible-char",
+            "%d Unicode tag character(s): invisible, and able to carry hidden text. Run with --fix." % len(tags), "")
+
+    odd = [m for m in ODD_SPACES_RE.finditer(text) if m.group(0) != "\u202f"]
+    if odd:
+        add(findings, text, odd[0].start(), "info", "invisible-char",
+            "%d unusual space(s) (non-breaking, thin, wide...). Usually harmless; --fix turns them into normal spaces." % len(odd),
             "")
 
     for m in re.finditer(r"[“”„]|(?<![\w])\"|\"(?![\w])", text):
@@ -443,6 +494,9 @@ def main(argv=None):
     p.add_argument("--json", action="store_true", help="print the result as JSON")
     p.add_argument("--allow", default="", help="comma-separated words to skip (names, brands)")
     p.add_argument("--strict", action="store_true", help="exit with code 1 if any error is found")
+    p.add_argument("--fix", action="store_true",
+                   help="remove invisible characters and unusual spaces; write the cleaned text to -o or standard output")
+    p.add_argument("-o", "--output", help="file for the cleaned text (with --fix)")
     a = p.parse_args(argv)
 
     if a.file == "-":
@@ -451,12 +505,24 @@ def main(argv=None):
         with open(a.file, encoding="utf-8") as fh:
             text = fh.read()
 
+    report_out = sys.stdout
+    if a.fix:
+        text, counts = clean_text(text)
+        if a.output:
+            with open(a.output, "w", encoding="utf-8") as fh:
+                fh.write(text)
+        else:
+            sys.stdout.write(text)
+            report_out = sys.stderr
+        report_out.write("cleaned: %d invisible character(s), %d tag character(s), %d unusual space(s)\n"
+                         % (counts["invisible"], counts["tag"], counts["spaces"]))
+
     result = run(text, a.allow.split(","))
     if a.json:
-        json.dump(result, sys.stdout, ensure_ascii=False, indent=2)
-        sys.stdout.write("\n")
+        json.dump(result, report_out, ensure_ascii=False, indent=2)
+        report_out.write("\n")
     else:
-        print_report(result)
+        print_report(result, report_out)
     if a.strict and result["summary"]["error"]:
         return 1
     return 0

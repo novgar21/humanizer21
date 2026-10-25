@@ -98,6 +98,27 @@ class TestPhrasesAndPunctuation(unittest.TestCase):
         self.assertEqual(cats("Serediň: https://enedilim.com/sozluk/soz/ve"), [])
 
 
+class TestFix(unittest.TestCase):
+    def test_clean_text_removes_hidden_characters(self):
+        dirty = ("Salam" + chr(0x200B) + " dünýä." + chr(0xA0) + "Kitap" + chr(0xAD) + "hana"
+                 + chr(0xE0041) + chr(0x202E) + "." + chr(0x2028) + "12" + chr(0x2009) + "km")
+        clean, counts = barla.clean_text(dirty)
+        self.assertEqual(clean, "Salam dünýä. Kitaphana.\n12 km")
+        self.assertEqual(counts, {"invisible": 4, "tag": 1, "spaces": 2})
+
+    def test_clean_text_keeps_normal_text(self):
+        text = "Aşgabat şäheri, «Watan» kinoteatry – 2026-njy ýyl.\nTäze setir."
+        self.assertEqual(barla.clean_text(text), (text, {"invisible": 0, "tag": 0, "spaces": 0}))
+
+    def test_fix_from_stdin(self):
+        import subprocess
+        script = os.path.join(HERE, "..", "scripts", "barla.py")
+        r = subprocess.run([sys.executable, script, "-", "--fix"], input="Aşgabat" + chr(0xA0) + "şäheri",
+                           capture_output=True, text=True, encoding="utf-8")
+        self.assertEqual(r.stdout, "Aşgabat şäheri")
+        self.assertIn("1 unusual space", r.stderr)
+
+
 class TestSamples(unittest.TestCase):
     def test_ai_sample_has_many_findings(self):
         self.assertGreaterEqual(len(barla.run(sample("01-ai-habar.txt"))["findings"]), 10)

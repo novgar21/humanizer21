@@ -179,6 +179,7 @@ The causative is `-dyr`, never `-tyr`: `ýazdyr-`, not `ýaztyr-`. Official pros
 
 - The past suffix is always `-dy/-di`, never `-ty/-ti`: `aýtdy`, `gitdi`, `ýapdy`.
 - Turkish `gelmiş` is `gelipdir` in Turkmen; Turkmen `-myş` is only hearsay.
+- `-yp/-ip` + `-myş/-miş` is Turkmen, not Turkish: `tanalypmyş`, `gelipmiş` ("it turns out it became known", "reportedly came"). Keep it as the source has it; changing it to `-ypdyr` drops the hearsay. Only the bare Turkish form (`gelmiş`, `tanınmış`) is an error. Confirmed by a native speaker after a test that changed `tanalypmyş` to `tanalypdyr`.
 
 ### 10.5 Future
 

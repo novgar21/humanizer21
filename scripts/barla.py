@@ -426,6 +426,7 @@ def check_numbers(text, masked, findings):
             continue
         words = list(re.finditer(r"[^\W\d_]+(?:-[^\W\d_]+)?", masked[m.end():m.end() + 120]))
         prev_end = 0
+        soft = False  # passed a word in -y/-i, which only a compound (haly fabrikleri) may follow
         for i, w in enumerate(words[:5]):
             gap = masked[m.end() + prev_end:m.end() + w.start()]
             if gap.strip():  # punctuation or a digit ends the noun phrase
@@ -433,6 +434,12 @@ def check_numbers(text, masked, findings):
             prev_end = w.end()
             low = norm_lower(w.group(0))
             if low in ("müň", "million", "milliard") and i == 0:
+                continue
+            if i == 0 and re.match(r"(müň|million|milliard|ýüz)(den|dan)$", low) and len(words) > 1 \
+                    and norm_lower(words[1].group(0)) in ("gowrak", "artyk", "köp"):
+                continue  # 2 müňden gowrak haly
+            if i == 1 and low in ("gowrak", "artyk") and re.match(r"(müň|million|milliard|ýüz)(den|dan)$",
+                                                                 norm_lower(words[0].group(0))):
                 continue
             if (low in PLURAL_OK_AFTER_NUMBER or low in NUMBER_WORDS or low in PHRASE_BREAKERS
                     or re.sub(r"(y|i|sy|si|a|e|da|de|dan|den|yň|iň)$", "", low) in MEASURE_WORDS):
@@ -444,6 +451,8 @@ def check_numbers(text, masked, findings):
                 nxt = words[i + 1].group(0) if i + 1 < len(words) else ""
                 if low in PLURAL_LOOKALIKES:
                     break
+                if soft and not re.search(r"(lary|leri)$", low):
+                    break
                 if (low in PLURAL_COMPOUND_HEADS and re.search(r"(y|i)$", norm_lower(nxt))
                         and not re.search(r"(dy|di)$", norm_lower(nxt))
                         and not masked[m.end() + w.end():m.end() + words[i + 1].start()].strip()):
@@ -453,7 +462,75 @@ def check_numbers(text, masked, findings):
                 break
             if low in BETWEEN_NUMBER_AND_NOUN or not re.search(STOP_ENDINGS, low):
                 continue
+            if re.search(r"[^aeäiouüy](y|i)$", low) and not soft:
+                soft = True
+                continue
             break
+
+
+# Two-syllable words that drop their second vowel before a vowel suffix
+# (ogul -> ogly, agyz -> agzy). Words that are also verbs or other stems
+# (bagyr-, asyl-, erin-, boýun) are left out on purpose.
+DROPPED_VOWEL = {"ogul": "ogl", "agyz": "agz", "burun": "burn", "köwüş": "köwş", "pasyl": "pasl",
+                 "ylym": "ylm", "nesil": "nesl", "deňiz": "deňz", "nagyş": "nagş"}
+# Words of two or more syllables whose final k p t ç turns into g b d j
+# before a vowel suffix (agaç -> agajy, kitap -> kitaby).
+VOICING = {"agaç": "agaj", "kitap": "kitab", "maksat": "maksad", "mekdep": "mekdeb", "ýürek": "ýüreg",
+           "çörek": "çöreg", "gulak": "gulag", "aýak": "aýag", "bilek": "bileg", "ýaprak": "ýaprag",
+           "toprak": "toprag", "tabak": "tabag", "kömek": "kömeg", "dilek": "dileg", "sapak": "sapag",
+           "ýumruk": "ýumrug", "çelek": "çeleg", "bölek": "böleg", "ýüzük": "ýüzüg", "ýelek": "ýeleg"}
+MONTHS_RE = re.compile(r"\b(Ýanwar|Fewral|Mart|Aprel|Maý|Iýun|Iýul|Awgust|Sentýabr|Oktýabr|Noýabr|Dekabr)[a-zäçňöşüýž]*\b")
+SUFFIX_VOWELS = "aeäyiuüo"
+
+
+def check_forms(text, masked, findings):
+    for m in WORD_RE.finditer(masked):
+        word = m.group(0)
+        low = norm_lower(word)
+        for table, cat, msg in (
+                (DROPPED_VOWEL, "dropped-vowel",
+                 "The second vowel drops before a vowel suffix (ogul → ogly, oglunyň; agyz → agzy)."),
+                (VOICING, "consonant-change",
+                 "Final k p t ç becomes g b d j before a vowel suffix (agaç → agajy, kitap → kitaby).")):
+            for stem, short in table.items():
+                if low.startswith(stem) and len(low) > len(stem) and low[len(stem)] in SUFFIX_VOWELS:
+                    fix = None
+                    if table is VOICING:  # only the consonant changes; the ending stays
+                        fix = short + low[len(stem):]
+                        if word[0].isupper():
+                            fix = fix[0].upper() + fix[1:]
+                    # After a dropped vowel the ending may change too (ogly, oglunyň), so no automatic fix.
+                    add(findings, text, m.start(), "error", cat, msg, word, fix)
+                    break
+        # Turkish present continuous: geliyor, gidiyorlar
+        if re.search(r"[^\W\d_](iyor|ıyor|uyor|üyor)(um|sun|uz|lar|du|muş)?$", low):
+            add(findings, text, m.start(), "warn", "turkish-word",
+                "Turkish '-iyor'. Turkmen says '-ýar/-ýär' (gelýär, gidýärler).", word)
+    # Month names written with a capital letter inside a sentence
+    for m in MONTHS_RE.finditer(masked):
+        before = masked[max(0, m.start() - 3):m.start()]
+        line_start = masked.rfind("\n", 0, m.start()) + 1
+        head = masked[line_start:m.start()].strip()
+        if head in ("", "#", "##", "###", "-", "*", "|") or re.search(r"[.!?«]\s*$", before):
+            continue
+        if re.match(r"\s+[A-ZÄÇŇÖŞÜÝŽ]", masked[m.end():m.end() + 3]):
+            continue  # a name such as Maýa Ataýewa
+        add(findings, text, m.start(), "warn", "capital-letter",
+            "Month names are written in lowercase inside a sentence (5-nji maý, oktýabr aýynda).",
+            m.group(0), m.group(0)[0].lower() + m.group(0)[1:])
+    # Generic word of a place name capitalized: Aşgabat Şäheri -> Aşgabat şäheri
+    for m in re.finditer(r"\b[A-ZÄÇŇÖŞÜÝŽ][a-zäçňöşüýž]+ ((Şäher|Welaýat|Etrap|Derýa|Köçe|Şäherçe)[a-zäçňöşüýž]*)", masked):
+        line_start = masked.rfind("\n", 0, m.start()) + 1
+        if masked[line_start:line_start + 1] == "#":
+            continue  # headings are checked separately
+        add(findings, text, m.start(1), "warn", "capital-letter",
+            "Only the proper part of a place name is capitalized (Aşgabat şäheri, Mary welaýaty).",
+            m.group(1), m.group(1)[0].lower() + m.group(1)[1:])
+    # Question particle written apart: gördüňiz mi -> gördüňizmi
+    for m in re.finditer(r"([^\W\d_]+) (mi|my|mu|mü)(?=[\s?.,!]|$)", masked):
+        add(findings, text, m.start(), "warn", "question-particle",
+            "The question suffix is written together with the word (gördüňizmi, barmy).",
+            m.group(0), m.group(1) + m.group(2))
 
 
 def check_phrases(text, findings):
@@ -567,6 +644,7 @@ def run(text, allow=()):
     word_count = len(WORD_RE.findall(masked))
     check_words(text, masked, allow, findings)
     check_numbers(text, masked, findings)
+    check_forms(text, masked, findings)
     check_phrases(text, findings)
     check_headings(text, findings)
     check_connectors(text, findings, word_count)
@@ -576,6 +654,76 @@ def run(text, allow=()):
     summary = {s: sum(1 for f in findings if f["severity"] == s) for s in order}
     summary["words"] = word_count
     return {"summary": summary, "findings": findings}
+
+
+NUMBER_NAMES = {"1": "bir", "2": "iki", "3": "üç", "4": "dört", "5": "bäş", "6": "alty", "7": "ýedi",
+                "8": "sekiz", "9": "dokuz", "10": "on"}
+
+
+def _numbers(text):
+    out = []
+    for m in re.finditer(r"\d+(?:[ \u00a0\u202f]\d{3})*(?:,\d+)?", text):
+        out.append(re.sub(r"[ \u00a0\u202f]", "", m.group(0)))
+    return out
+
+
+def _quotes(text):
+    return [re.sub(r"\s+", " ", q.strip()) for q in re.findall(r"«([^»]*)»|\"([^\"\n]*)\"|“([^”]*)”", text)
+            for q in q if q]
+
+
+def _is_latin(text):
+    lat = sum(1 for ch in text if "LATIN" in unicodedata.name(ch, ""))
+    cyr = sum(1 for ch in text if "CYRILLIC" in unicodedata.name(ch, ""))
+    return lat >= cyr
+
+
+def compare(source, result):
+    """List facts of the source that the result seems to have lost."""
+    items = []
+    res_numbers = set(_numbers(result))
+    res_low = norm_lower(result)
+    missing = []
+    for n in dict.fromkeys(_numbers(source)):
+        if n in res_numbers:
+            continue
+        if n in NUMBER_NAMES and re.search(r"\b%s\b" % NUMBER_NAMES[n], res_low):
+            continue
+        missing.append(n)
+    if missing:
+        items.append({"kind": "number", "message": "Numbers of the source not found in the result", "items": missing})
+
+    same_language = _is_latin(source) == _is_latin(result)
+    src_quotes = _quotes(source)
+    if same_language:
+        res_norm = re.sub(r"\s+", " ", result)
+        lost = [q for q in src_quotes if len(q) > 15 and q not in res_norm]
+        if lost:
+            items.append({"kind": "quote", "message": "Quotes changed or missing (a quote keeps every word and mark)",
+                          "items": lost})
+        names = []
+        body = "\n".join(l for l in source.splitlines() if not l.lstrip().startswith("#"))
+        for m in re.finditer(r"(?<=[a-zäçňöşüýž,:;]) ([A-ZÄÇŇÖŞÜÝŽ][a-zäçňöşüýž]{3,})", body):
+            w = m.group(1)
+            stem = norm_lower(w[:max(4, len(w) - 4)])
+            if stem not in res_low and w not in names:
+                names.append(w)
+        if names:
+            items.append({"kind": "name", "message": "Capitalized words of the source not found in the result",
+                          "items": names})
+    elif len(_quotes(result)) < len([q for q in src_quotes if len(q) > 15]):
+        items.append({"kind": "quote", "message": "The translation has fewer quotes than the source",
+                      "items": ["%d in the source, %d in the result" % (len(src_quotes), len(_quotes(result)))]})
+
+    def count(pattern, text):
+        return len(re.findall(pattern, text, re.MULTILINE))
+    for kind, pattern, label in (("table", r"^\s*\|.*\|\s*$", "table rows"),
+                                 ("list", r"^\s*(?:[-*•]|\d+[.)])\s+\S", "list items")):
+        a, b = count(pattern, source), count(pattern, result)
+        if b < a:
+            items.append({"kind": kind, "message": "Fewer %s than in the source" % label,
+                          "items": ["%d in the source, %d in the result" % (a, b)]})
+    return items
 
 
 def print_report(result, out=sys.stdout):
@@ -602,6 +750,9 @@ def main(argv=None):
     p.add_argument("--fix", action="store_true",
                    help="remove invisible characters and unusual spaces; write the cleaned text to -o or standard output")
     p.add_argument("-o", "--output", help="file for the cleaned text (with --fix)")
+    p.add_argument("--compare", metavar="SOURCE",
+                   help="also compare with the source text and list numbers, quotes, names, "
+                        "table rows and list items the result seems to have lost")
     a = p.parse_args(argv)
 
     if a.file == "-":
@@ -623,11 +774,21 @@ def main(argv=None):
                          % (counts["invisible"], counts["tag"], counts["spaces"]))
 
     result = run(text, a.allow.split(","))
+    if a.compare:
+        with open(a.compare, encoding="utf-8") as fh:
+            result["compare"] = compare(fh.read(), text)
     if a.json:
         json.dump(result, report_out, ensure_ascii=False, indent=2)
         report_out.write("\n")
     else:
         print_report(result, report_out)
+        if a.compare:
+            if not result["compare"]:
+                report_out.write("compare: nothing of the source seems lost. Still check the meaning yourself.\n")
+            for item in result["compare"]:
+                report_out.write("compare [%s] %s:\n" % (item["kind"], item["message"]))
+                for x in item["items"]:
+                    report_out.write("    %s\n" % x)
     if a.strict and result["summary"]["error"]:
         return 1
     return 0

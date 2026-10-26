@@ -24,6 +24,14 @@ def grade(case_dir, text):
         exp = json.load(fh)
     results = [("keeps %r" % k, k in text) for k in exp["must_keep"]]
     results += [("has no %r" % k, k not in text) for k in exp["must_not"]]
+    # Quotes and table rows of a Turkmen source must survive unchanged.
+    if exp.get("source_language", "tk") == "tk":
+        with open(os.path.join(case_dir, "input.txt"), encoding="utf-8") as fh:
+            lost = {i["kind"]: i["items"] for i in barla.compare(fh.read(), text)}
+        for q in lost.get("quote", []):
+            results.append(("keeps the quote %r" % q, False))
+        results.append(("keeps every quote of the source", "quote" not in lost))
+        results.append(("keeps every table row of the source", "table" not in lost))
     summary = barla.run(text)["summary"]
     results.append(("barla.py finds no errors or warnings", summary["error"] + summary["warn"] == 0))
     return results

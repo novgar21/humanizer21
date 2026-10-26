@@ -82,6 +82,57 @@ class TestWords(unittest.TestCase):
         self.assertIn("n-vs-ň", cats("Türkmenistanyn paýtagty"))
 
 
+class TestForms(unittest.TestCase):
+    def test_dropped_vowel(self):
+        found = [f["text"] for f in barla.run("Ogulynyň toýy. Agyzy açyk. Ogly geldi, oglunyň toýy, ogullar, agzy.")["findings"]
+                 if f["category"] == "dropped-vowel"]
+        self.assertEqual(found, ["Ogulynyň", "Agyzy"])
+
+    def test_consonant_change(self):
+        fixes = [f.get("suggestion") for f in barla.run("Agaçyň gabygy, kitapy okady.")["findings"]
+                 if f["category"] == "consonant-change"]
+        self.assertEqual(fixes, ["Agajyň", "kitaby"])
+        self.assertNotIn("consonant-change", cats("Agajyň gabygy, kitaby, kitaphana, mekdepler, toprakda."))
+
+    def test_month_capital(self):
+        found = [f["text"] for f in barla.run("Ol 5-nji Maý geldi. Biz 1-nji Oktýabrdan başladyk.")["findings"]
+                 if f["category"] == "capital-letter"]
+        self.assertEqual(found, ["Maý", "Oktýabrdan"])
+        self.assertNotIn("capital-letter", cats("Maý aýy gowy. Maýa Ataýewa geldi.\n## Oktýabr\n5-nji maý."))
+
+    def test_place_word_capital(self):
+        self.assertIn("capital-letter", cats("Aşgabat Şäherindäki muzeý."))
+        self.assertNotIn("capital-letter", cats("Aşgabat şäherindäki muzeý. Ol Oba hojalyk ministrligi."))
+
+    def test_question_particle_and_turkish_iyor(self):
+        self.assertIn("question-particle", cats("Siz gördüňiz mi?"))
+        self.assertNotIn("question-particle", cats("Siz gördüňizmi?"))
+        self.assertIn("turkish-word", cats("Olar geliyorlar."))
+
+
+class TestCompare(unittest.TestCase):
+    SRC = ("Muzeýde 2 müň haly bar. Direktor Gülşat Amanowa: «Her bir haly — bu bir kitap».\n"
+           "| Önüm | Sany |\n|---|---|\n| Haly | 4 800 |\n| Torba | 3 100 |\n- birinji\n- ikinji\n")
+
+    def test_nothing_lost(self):
+        self.assertEqual(barla.compare(self.SRC, self.SRC), [])
+
+    def test_lost_number_quote_name_row_and_item(self):
+        res = ("Muzeýde iki müň haly bar. Direktor: «Her bir haly, bu bir kitap».\n"
+               "| Önüm | Sany |\n|---|---|\n| Haly | 4 800 |\n- birinji\n")
+        kinds = {i["kind"]: i["items"] for i in barla.compare(self.SRC, res)}
+        self.assertEqual(kinds["number"], ["3100"])
+        self.assertEqual(kinds["quote"], ["Her bir haly — bu bir kitap"])
+        self.assertIn("Amanowa", kinds["name"])
+        self.assertIn("table", kinds)
+        self.assertIn("list", kinds)
+
+    def test_translation_compares_numbers_only(self):
+        src = "Директор Арслан Мурадов сказал: «Мы ждём всех — от первоклассников до ветеранов». Пришли 15 тыс. человек."
+        res = "Direktor Arslan Myradow: «Biz hemmä garaşýarys – birinji synp okuwçylaryndan weteranlara çenli» diýdi. 15 müň adam geldi."
+        self.assertEqual(barla.compare(src, res), [])
+
+
 class TestNumbers(unittest.TestCase):
     def test_ordinals(self):
         bad = [f["suggestion"] for f in barla.run("2025-njy ýyl, 10-nji synp, 6-nci gezek")["findings"]

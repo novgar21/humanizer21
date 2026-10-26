@@ -145,7 +145,16 @@ Two-syllable words with short vowels, ending in `z l n r s ş` with a narrow sec
 
 - `agyz → agzy`, `ogul → ogly`, `bagyr → bagry`, `burun → burny`, `köwüş → köwşi`
 - loans too: `asyl → asly`, `pasyl → pasly`, `ylym → ylmy`, `nesil → nesli`
-- Wrong → right: `agyzy → agzy`, `oguly → ogly`
+- Wrong → right: `agyzy → agzy`, `oguly → ogly`, `ogulynyň → oglunyň`
+- The person of the ending does not change when the vowel drops. Check it, because the short forms look alike:
+
+  | | his/her | his/her (genitive) | your (sen) | your (genitive) |
+  |---|---|---|---|---|
+  | `ogul` | `ogly` | `oglunyň` | `ogluň` | `ogluňyň` |
+  | `agyz` | `agzy` | `agzynyň` | `agzyň` | `agzyňyň` |
+  | `burun` | `burny` | `burnunyň` | `burnuň` | `burnuňyň` |
+
+  `Ogluň toýy` means "your son's wedding"; a woman talking about her own son's wedding in the third person is `oglunyň toýy`. Found in a test where `ogulynyň` became `ogluň`.
 - Nouns in `-ýyş/-ýiş`: `ýaşaýyş → ýaşaýşy`, `sözleýiş → sözleýşi`
 
 Check unusual words in the dictionary; the rule has conditions that vary.

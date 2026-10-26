@@ -162,9 +162,12 @@ python3 scripts/barla.py text.txt --json
 python3 scripts/barla.py text.txt --allow "Coca-Cola,Microsoft"
 cat text.txt | python3 scripts/barla.py -
 python3 scripts/barla.py text.txt --fix -o clean.txt
+python3 scripts/barla.py result.txt --compare source.txt
 ```
 
 `--fix` removes characters a reader cannot see: zero-width spaces, soft hyphens, direction marks and Unicode tag characters, and turns non-breaking, thin and wide spaces into normal ones. Text pasted from chat windows, PDFs and web pages often carries them, and they break site search, line breaks and character counts. Letters, punctuation and line breaks stay as they are.
+
+`--compare` checks a result against its source and lists what may have been lost: numbers, quotes that changed, names, table rows and list items. It works for translations too, where it compares numbers, the count of quotes, table rows and list items.
 
 Sample output:
 
@@ -193,7 +196,7 @@ prompts/system-prompt.md         one-file version for other assistants
 bin/install.js                   the npx installer
 scripts/validate-package.py      package check: versions, manifests, pattern numbers, sizes
 tests/                           tests for the checker, the installer and the corpus
-tests/corpus/                    nine test texts with expected results
+tests/corpus/                    ten test texts with expected results
 tests/grade.py                   grades a result against a corpus case
 .claude-plugin/                  Claude Code plugin and marketplace manifests
 CHANGELOG.md                     what changed in each version
@@ -205,7 +208,7 @@ Run `npm test` and `python3 scripts/validate-package.py` before a pull request. 
 
 ### Test corpus
 
-`tests/corpus/` holds nine machine-written texts: Turkmen news items, social posts, a website article, a memo and a long annual report, and two Russian articles to translate into Turkmen. Each case has the input, the request, a list of facts that must survive and of tells and errors that must disappear, and an accepted result. To check how the skill did on a case, save its answer to a file and run:
+`tests/corpus/` holds ten machine-written texts: Turkmen news items, social posts, a website article, a memo, a long annual report and a long feature with an interview, and two Russian articles to translate into Turkmen. Each case has the input, the request, a list of facts that must survive and of tells and errors that must disappear, and an accepted result. To check how the skill did on a case, save its answer to a file and run:
 
 ```bash
 python3 tests/grade.py tests/corpus/olimpiada-habary answer.txt

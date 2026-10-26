@@ -30,7 +30,7 @@ The strongest and most frequent tells. The sentence signals importance instead o
 
 ### 2. One-line closers and summary paragraphs
 
-**Watch for:** a final paragraph starting `Netijede`, `Jemläp aýtsak`, `Gysgaça aýtsak` that adds nothing; a one-line paragraph repeating the one before; a sentence after an example that names what it showed (`Bu bolsa ... aýdyň subutnamasydyr`, `Munuň özi uly mümkinçilik`); the same closer after several sections.
+**Watch for:** a final paragraph starting `Netijede`, `Jemläp aýtsak`, `Gysgaça aýtsak` that adds nothing; a one-line paragraph repeating the one before; a sentence after an example that names what it showed (`Bu bolsa ... aýdyň subutnamasydyr`, `Munuň özi uly mümkinçilik`); the same closer after several sections; one exclaimed word or fragment as a sentence (`Hakykatdanam!`, `Ajaýyp!`, `Ine, netije!`).
 **Problem:** the line asks the reader to pause on a claim instead of adding to it. In a short text, end on the last concrete fact. Keep a closer only when it adds a fact or consequence.
 
 > Before: Kitaphana sişenbe günleri hem işleýär. Bu bolsa okyjylar üçin uly mümkinçilik.
@@ -48,7 +48,7 @@ The strongest and most frequent tells. The sentence signals importance instead o
 
 ### 4. Staged run-up before the point
 
-**Watch for:** `Şuny bellemek gerek`, `Aýratyn bellemeli zat`, `Geliň, ... seredeliň` (or `gürleşeliň`, `öwreneliň`, `düşüneliň`), `Ine, bilmeli zatlaryňyz`, `Indi ... geçeliň`, `Size bu haty ýazmagymyň sebäbi şundan ybarat`, a standalone `Açygyny aýtsam?`.
+**Watch for:** `Şuny bellemek gerek`, `Aýratyn bellemeli zat`, `Geliň, ... seredeliň` (or `gürleşeliň`, `öwreneliň`, `düşüneliň`), `Ine, bilmeli zatlaryňyz`, `Indi ... geçeliň`, `Size bu haty ýazmagymyň sebäbi şundan ybarat`, a standalone `Açygyny aýtsam?`; a pause staged for the reader (`Bir pursat durup oýlanalyň`, `Indi bolsa iň gyzykly ýerine geçeliň`).
 **Problem:** the writer announces the point instead of making it. Remove the run-up, not just its tone.
 
 > Before: Şuny bellemek gerek, täze ýol 2027-nji ýylda ulanylmaga beriler.
@@ -168,6 +168,7 @@ The fact underneath is usually sound. Keep it and remove the dressing.
 
 - Bold labels with colons on every item (`**Esasy pikir:** ...`): turn the list into sentences when the labels carry no information of their own.
 - Headings on a text of three paragraphs, headings that capitalize every word, a horizontal rule between every section.
+- Arrows in place of a verb (`Tejribe → netije`, `Okuw ➜ iş`): write the sentence. Keep an arrow only in a diagram or a table of changes.
 - **Emoji: remove them by default, in every genre, including social posts.** Keep emoji only when the user asks for them or gives a voice sample that uses them, and then at the sample's rate. Never one emoji per line or per sentence.
 
 ### 18. A heading repeated in the first sentence
@@ -226,6 +227,9 @@ Act on this pattern when the text is a reply, a memo or a letter to someone who 
 ---
 
 ## When not to act
+
+- Pair words with a hyphen are normal Turkmen, not a tell: `gije-gündiz`, `aýal-gyzlar`, `ýygy-ýygydan`, `ep-esli`. Keep them.
+- In a file, change the prose only. Table cells, numbers, links, code and names of files stay as they are.
 
 - Quotations, official names, titles of documents and laws, and fixed formulas of the genre stay as they are, even if they contain a tell.
 - A specific, unusual detail, a real opinion, a doubt, a joke or an aside is the writer's voice. Keep it.

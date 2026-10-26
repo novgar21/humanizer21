@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.1.8
+
+- The audit now catches contradictions in any source, not only in translations: two facts that cannot both be true (`5–9-njy maý` next to `Üç günüň dowamynda`) go under "to verify" instead of being passed on silently.
+- The audit keeps rankings (`iň köp`, `birinji ýeri`), real lists as lists, and a source's statement that information is missing (`resmi maglumat ýok`). Words of a named person in an interview count as a quote.
+- When a vowel drops, the person of the ending stays: `oglunyň` (his/her son's), not `ogluň` (your son's). A table of these forms is in `references/orthography.md`. Found in a test where `ogulynyň` became `ogluň`.
+- New tells, folded into existing patterns: one exclaimed word as a sentence (§2), a pause staged for the reader (§4), arrows in place of a verb (§17). Pair words with a hyphen (`gije-gündiz`) are marked as normal Turkmen, and edits in files leave tables, numbers and links alone.
+- `barla.py --compare SOURCE` lists numbers, quotes, names, table rows and list items that a result lost. The grader uses it to check that quotes and tables survive.
+- `barla.py` now catches the wrong dropped-vowel forms (`ogulynyň`, `agyzy`), a missing consonant change (`agaçyň` → `agajyň`, `kitapy` → `kitaby`), month names and place words with a capital letter inside a sentence (`5-nji Maý`, `Aşgabat Şäheri`), a question suffix written apart (`gördüňiz mi`), the Turkish `-iyor`, and plurals after `2 müňden gowrak` and after compounds such as `2 täze haly fabrikleri`.
+- Added a tenth corpus case: a long feature about Turkmen carpets with an interview.
+
 ## 1.1.7
 
 - Quotes keep their own punctuation. Inside «...» only the quotation marks change, in any language, and the dash and connector rules do not apply there. In a translation the speaker's marks carry over one for one: a dash stays a dash. Found in two tests where a translation turned every dash inside a quote into a comma.

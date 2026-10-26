@@ -63,3 +63,18 @@ münber
 
 # Wrong forms the dictionary accepts (confirmed by a native speaker)
 !düwni
+
+# Found in the career guide test
+kafedra/sahypa
+kollejiniň
+kolleji
+kollejde
+inženerçilik
+dekanat
+dekanata
+şulardyr
+tehnigi
+uçurymlarynyňkydan
+gutarmanka
+kiberhowpsuzlyk
+hünärleriňki

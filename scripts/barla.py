@@ -621,6 +621,10 @@ class WordList:
     def known(self, word):
         if self._known(word):
             return True
+        # -yp + -myş (hearsay) is right whenever the same -yp + -dyr form is: tanalypmyş like tanalypdyr
+        hm = re.match(r"(.+(?:yp|ip|up|üp|p))(myş|miş|muş|müş)(lar|ler)?$", word)
+        if hm and self._known(hm.group(1) + ("dyr" if hm.group(2) in ("myş", "muş") else "dir")):
+            return True
         if word[:1].isupper() and self._known(word[0].lower() + word[1:]):
             return True
         return self._known(norm_lower(word))
@@ -782,10 +786,18 @@ NUMBER_NAMES = {"1": "bir", "2": "iki", "3": "üç", "4": "dört", "5": "bäş",
                 "8": "sekiz", "9": "dokuz", "10": "on"}
 
 
-def _numbers(text):
+# Turkmen number words read as digits by --compare ("bir" is left out: it is also an article).
+NUMBER_WORD_VALUES = {"iki": "2", "üç": "3", "dört": "4", "bäş": "5", "alty": "6", "ýedi": "7", "sekiz": "8",
+                      "dokuz": "9", "on": "10", "ýigrimi": "20", "otuz": "30", "kyrk": "40", "elli": "50"}
+
+
+def _numbers(text, words=False):
     out = []
     for m in re.finditer(r"\d+(?:[ \u00a0\u202f]\d{3})*(?:,\d+)?", text):
         out.append(re.sub(r"[ \u00a0\u202f]", "", m.group(0)))
+    if words:
+        for m in re.finditer(r"(?<![^\W\d_])(%s)(?![^\W\d_])" % "|".join(NUMBER_WORD_VALUES), norm_lower(text)):
+            out.append(NUMBER_WORD_VALUES[m.group(1)])
     return out
 
 
@@ -803,10 +815,11 @@ def _is_latin(text):
 def compare(source, result):
     """List facts of the source that the result seems to have lost."""
     items = []
-    res_numbers = set(_numbers(result))
+    same_language = _is_latin(source) == _is_latin(result)
+    res_numbers = set(_numbers(result, words=_is_latin(result)))
     res_low = norm_lower(result)
     missing = []
-    for n in dict.fromkeys(_numbers(source)):
+    for n in dict.fromkeys(_numbers(source, words=same_language and _is_latin(source))):
         if n in res_numbers:
             continue
         if n in NUMBER_NAMES and re.search(r"\b%s\b" % NUMBER_NAMES[n], res_low):
@@ -815,7 +828,6 @@ def compare(source, result):
     if missing:
         items.append({"kind": "number", "message": "Numbers of the source not found in the result", "items": missing})
 
-    same_language = _is_latin(source) == _is_latin(result)
     src_quotes = _quotes(source)
     if same_language:
         res_norm = re.sub(r"\s+", " ", result)

@@ -1,7 +1,7 @@
 {
   "name": "humanizer21",
   "description": "Turkmen language humanizer. Edits and writes Turkmen text (türkmen dili, Latin script) so it reads like a literate native speaker wrote it, not a chatbot.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "author": {
     "name": "Novruz Garryyev"
   },

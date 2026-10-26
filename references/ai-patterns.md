@@ -231,7 +231,7 @@ Act on this pattern when the text is a reply, a memo or a letter to someone who 
 - Pair words with a hyphen are normal Turkmen, not a tell: `gije-gündiz`, `aýal-gyzlar`, `ýygy-ýygydan`, `ep-esli`. Keep them.
 - In a file, change the prose only. Table cells, numbers, links, code and names of files stay as they are.
 
-- Quotations, official names, titles of documents and laws, and fixed formulas of the genre stay as they are, even if they contain a tell.
+- Quotations, official names, titles of documents and laws, and fixed formulas of the genre stay as they are, even if they contain a tell. Only a plain spelling slip inside a quote is fixed, and listed.
 - A specific, unusual detail, a real opinion, a doubt, a joke or an aside is the writer's voice. Keep it.
 - Text written before late 2022 was not written by a chatbot. Edit it for grammar only, if asked.
 - People who judge by feel do little better than chance, and human writing keeps absorbing AI habits. Several tells together are the evidence; one dash or one `Şeýle hem` is not.

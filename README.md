@@ -200,7 +200,7 @@ prompts/system-prompt.md         one-file version for other assistants
 bin/install.js                   the npx installer
 scripts/validate-package.py      package check: versions, manifests, pattern numbers, sizes
 tests/                           tests for the checker, the installer and the corpus
-tests/corpus/                    ten test texts with expected results
+tests/corpus/                    eleven test texts with expected results
 tests/grade.py                   grades a result against a corpus case
 .claude-plugin/                  Claude Code plugin and marketplace manifests
 CHANGELOG.md                     what changed in each version
@@ -212,7 +212,7 @@ Run `npm test` and `python3 scripts/validate-package.py` before a pull request. 
 
 ### Test corpus
 
-`tests/corpus/` holds ten machine-written texts: Turkmen news items, social posts, a website article, a memo, a long annual report and a long feature with an interview, and two Russian articles to translate into Turkmen. Each case has the input, the request, a list of facts that must survive and of tells and errors that must disappear, and an accepted result. To check how the skill did on a case, save its answer to a file and run:
+`tests/corpus/` holds eleven machine-written texts: Turkmen news items, social posts, a website article, a memo, a long annual report, a long feature with an interview and a career guide with step lists and questions and answers, and two Russian articles to translate into Turkmen. Each case has the input, the request, a list of facts that must survive and of tells and errors that must disappear, and an accepted result. To check how the skill did on a case, save its answer to a file and run:
 
 ```bash
 python3 tests/grade.py tests/corpus/olimpiada-habary answer.txt

@@ -128,6 +128,10 @@ class TestWordList(unittest.TestCase):
         for w in ("ogulynyň", "agaçyň", "welaýatyda", "kompýuterlar", "mekdeplerda", "niyet", "sadece", "düwni"):
             self.assertFalse(self.words.known(w), w)
 
+    def test_hearsay_myş_follows_dyr(self):
+        for w in ("hasaplanypmyş", "gelipmiş", "tanalypmyşlar"):
+            self.assertTrue(self.words.known(w), w)
+
     def test_additions(self):
         for w in ("tanalypmyş", "meýilleşdirýäris", "olimpiadasy", "goşundyda", "jikme-jik"):
             self.assertTrue(self.words.known(w), w)
@@ -158,6 +162,12 @@ class TestCompare(unittest.TestCase):
         self.assertIn("Amanowa", kinds["name"])
         self.assertIn("table", kinds)
         self.assertIn("list", kinds)
+
+    def test_number_words(self):
+        src = "Ol alty ýyl okady. Ol dört ýyl okandygyny aýtdy. Iki gün dowam etdi."
+        lost = barla.compare(src, "Ol alty ýyl okady. 2 gün dowam etdi.")
+        self.assertEqual(lost, [{"kind": "number", "message": "Numbers of the source not found in the result",
+                                 "items": ["4"]}])
 
     def test_translation_compares_numbers_only(self):
         src = "Директор Арслан Мурадов сказал: «Мы ждём всех — от первоклассников до ветеранов». Пришли 15 тыс. человек."

@@ -113,7 +113,7 @@ The site requires double quotation marks. Turkmen print and state media use `«.
 
 **Omitted words:** `...`; source in brackets after the quote.
 
-**The quote's own punctuation is the speaker's.** Change only the quotation marks. A dash, comma or exclamation mark inside a quote stays, even where this file would advise another mark in your own text; the dash rule in section 8 does not apply inside quotes. In a translation, keep each mark of the original quote where Turkmen allows it: `«Мы ждём всех — от первоклассников до ветеранов»` → `«Biz hemmä garaşýarys – birinji synp okuwçylaryndan weteranlara çenli»`, not a comma or a rebuilt sentence. The same goes for a quoted greeting with its set wishes (`size berk jan saglyk, ...`).
+**The quote's own punctuation is the speaker's.** Change only the quotation marks and plain spelling slips of letters or suffixes (`kitapyny` → `kitabyny`); list each such fix in your notes. Never change a word, its order or a punctuation mark. A dash, comma or exclamation mark inside a quote stays, even where this file would advise another mark in your own text; the dash rule in section 8 does not apply inside quotes. In a translation, keep each mark of the original quote where Turkmen allows it: `«Мы ждём всех — от первоклассников до ветеранов»` → `«Biz hemmä garaşýarys – birinji synp okuwçylaryndan weteranlara çenli»`, not a comma or a rebuilt sentence. The same goes for a quoted greeting with its set wishes (`size berk jan saglyk, ...`).
 
 **Indirect speech**, the normal news register:
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.1
+
+- When the source contradicts itself, both statements stay until the author answers, and the place goes under "to verify". Found in a test where the skill kept one of two figures and deleted the other.
+- Every statement of the source the skill cuts goes into its notes, hearsay included (`... hasaplanypmyş`). Found in a test where that sentence vanished without a note.
+- Inside a quote the skill now fixes plain spelling slips of letters or suffixes (`kitapyny` → `kitabyny`) and lists each fix; words, word order and punctuation still never change.
+- `barla.py --compare` also reads Turkmen number words (`alty`, `dört`), so a lost `dört ýyl` is reported.
+- The word list accepts any `-yp` + `-myş` form whose `-yp` + `-dyr` form it knows (`hasaplanypmyş`), and knows nine more words from the tests (`kafedra`, `kolleji`, `dekanat`, `tehnigi` and others).
+- Added an eleventh corpus case: a career guide with step lists, questions and answers, an interview and three contradictions.
+
 ## 1.2.0
 
 - New `barla.py --dict` mode lists words that a Turkmen word list does not know, as notes. The list is the Hunspell dictionary of nazartm/turkmen-spell-check-dictionary (about 62,000 stems, Apache 2.0), shipped compressed in `scripts/sozluk/`, plus our additions in `scripts/sozluk/gosmaca.txt`. `barla.py` reads it with its own code and stays standard-library only; on all 1,954 words of the test corpus it gives the same answers as a reference Hunspell implementation. Names, sentence starts, Roman numerals, endings after numbers and words split by hidden characters are skipped.

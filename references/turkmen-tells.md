@@ -98,6 +98,23 @@ Chains of four or more genitives (`ýurdumyzyň ykdysadyýetiniň pudaklarynyň 
 - `sen` and `siz` mixed in one text. Pick one form of address and keep it.
 - Mixed tenses in a news item: the default is the definite past `-dy/-di`; reported facts may use `-ypdyr`.
 
+## 5a. Names and places translated from Russian
+
+Russian spells Turkmen names by its own rules. In a translation, give them back their Turkmen form; do not transliterate letter by letter.
+
+| Russian | Turkmen | What changes |
+|---|---|---|
+| `Мурадов`, `Чарыева`, `Ходжаев`, `Атаева` | `Myradow`, `Çaryýewa`, `Hojaýew`, `Ataýewa` | `у` after a back vowel is often `y`; `-ев` after a vowel is `-ýew`; `дж` is `j`; `в` is `w` |
+| `Аннагельдыев`, `Гельдиев`, `Овезова` | `Annageldiýew`, `Geldiýew`, `Öwezowa` | Russian drops `ä`, `ö`, `ü`; restore them from the Turkmen name |
+| `Эрк-Кала`, `Гонур-депе` | `Erkgala`, `Goňurdepe` | `кала` is `gala`; compound place names are one word |
+| `Хаузханское водохранилище` | `Hanhowuz suw howdany` | the proper name keeps `howuz`; the reservoir itself is `suw howdany` |
+| `Векильбазарский этрап`, `Байрамали` | `Wekilbazar etraby`, `Baýramaly` | drop the Russian adjective ending |
+| `гурёш`, `хяким`, `дайханское объединение` | `göreş`, `häkim`, `daýhan birleşigi` | Turkmen words in Russian spelling |
+
+If you are not sure of the Turkmen form of a name, keep your best form and list it under "to verify".
+
+**Errors in the source.** A translation that repeats a factual slip of the source spreads it. If the source contradicts itself or names a well-known thing wrongly (`вдоль канала Мургаб` in a text that elsewhere calls the Murgap a river), write the correct form (`Murgap derýasynyň ugrunda`) and list it under "to verify" with the source's wording. If you cannot tell which version is right, keep the source's and list it.
+
 ## 6. Register mistakes
 
 - Official verbs where nothing official happens: `amala aşyrdym` for "I did", `durmuşa geçirdik` for "we made". Use `etdim`, `etdik`.

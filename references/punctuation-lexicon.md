@@ -113,6 +113,8 @@ The site requires double quotation marks. Turkmen print and state media use `«.
 
 **Omitted words:** `...`; source in brackets after the quote.
 
+**The quote's own punctuation is the speaker's.** Change only the quotation marks. A dash, comma or exclamation mark inside a quote stays, even where this file would advise another mark in your own text; the dash rule in section 8 does not apply inside quotes. In a translation, keep each mark of the original quote where Turkmen allows it: `«Мы ждём всех — от первоклассников до ветеранов»` → `«Biz hemmä garaşýarys – birinji synp okuwçylaryndan weteranlara çenli»`, not a comma or a rebuilt sentence. The same goes for a quoted greeting with its set wishes (`size berk jan saglyk, ...`).
+
 **Indirect speech**, the normal news register:
 
 - `-dygyny / -jakdygyny` + `aýtdy / belledi / nygtady / habar berdi`: `Ol ertir geljekdigini aýtdy.`
@@ -143,7 +145,7 @@ Turkmen uses the dash for specific jobs:
 - for ranges: `2020–2025-nji ýyllar`
 - headlines and slogans: `Ýaşlar – geljegimiz`
 
-A dash used as an all-purpose connector between clauses is a machine habit. Use a comma, colon or full stop instead.
+A dash used as an all-purpose connector between clauses is a machine habit. Use a comma, colon or full stop instead. This applies to your own text only, never inside a quote (section 6).
 
 ## 9. Loanwords and native words
 
@@ -209,8 +211,10 @@ Machine Turkmen often picks the wrong one of two close words, and neither `barla
 |---|---|---|---|
 | `howuz` (`howzy`) | a small, built basin of water, open or indoor | a swimming pool (`ýüzüş howzy`), a fountain basin | a lake or reservoir |
 | `howdan` | a body of water in the open, a reservoir or pond | a reservoir, a pond in nature | a pool in a sports complex |
+| `basseýn` (`derýanyň basseýni`) | the area a river drains | `Murgap derýasynyň basseýni` (Russian `бассейн реки`) | a swimming pool |
+| `derýa` and `kanal` | a river, and a channel dug by people | `Murgap derýasy`; `suwaryş kanaly` | each other: check which one the place is |
 
-Confirmed by a native speaker after a test in which a 25-metre pool in a sports complex came out as `ýüzüş howdany`. Add further pairs here as they turn up.
+Confirmed by a native speaker after tests in which a 25-metre pool in a sports complex came out as `ýüzüş howdany`, and the river Murgap as `Murgap kanaly`. Add further pairs here as they turn up.
 
 ## 11. Old and new words
 

@@ -101,6 +101,19 @@ class TestNumbers(unittest.TestCase):
         self.assertEqual(found, ["mikrofonlar", "kompýuterler"])
         self.assertNotIn("plural-after-number", cats("5 ýyldan bäri adamlar gelýär."))
 
+    def test_plural_after_number_with_long_phrase(self):
+        found = [f["text"] for f in barla.run(
+            "Kompaniýanyň 3 radio kanallary işleýär. 2 täze göçme telewizion stansiýalar alyndy. "
+            "5 daşary ýurt media guramalary bilen ylalaşyk baglaşyldy. 9 sany uly baýramçylyk konsertleri guraldy."
+        )["findings"] if f["category"] == "plural-after-number"]
+        self.assertEqual(found, ["kanallary", "stansiýalar", "guramalary", "konsertleri"])
+
+    def test_number_phrase_stops_at_verbs_cases_and_compounds(self):
+        clean = ("320 orunlyk iki çagalar bagy açyldy. 5 ýyldan bäri adamlar gelýär. 3 gezek ýaryşlara gatnaşdy. "
+                 "12 kamera we kompýuterler alyndy. 960 okuwçy okap biler. 35 ýaşdan ýaş adamlar.")
+        self.assertNotIn("plural-after-number", cats(clean))
+        self.assertIn("plural-after-number", cats("2 çagalar geldi."))
+
     def test_bir_in_set_phrases_is_not_a_number(self):
         self.assertNotIn("plural-after-number", cats("Olar diňe bir meseleleri çözmekde däl. Her bir okuwçylaryň işi."))
         self.assertIn("plural-after-number", cats("Bir kitaplar."))
@@ -117,6 +130,22 @@ class TestPhrasesAndPunctuation(unittest.TestCase):
         quoted = "Ol şeýle diýdi: «Olar diňe bir meseleleri çözmekde däl, eýsem düşündirmekde hem ökde»."
         self.assertNotIn("not-x-but-y", cats(quoted))
         self.assertIn("not-x-but-y", cats("Bu diňe bir bina däl, eýsem merkez."))
+
+    def test_dashes_in_quotes_ranges_and_dialogue_are_not_counted(self):
+        text = ("Ol şeýle diýdi: «Biz gelýäris \u2014 hemmämiz \u2014 ertir». Sagat 7:00\u20139:00 aralygynda.\n"
+                "\u2014 Haçan?\n\u2014 Ertir.")
+        self.assertNotIn("dashes", cats(text))
+
+    def test_roman_numerals_and_brands(self):
+        c = cats("XIX we XX asyrlar. YouTube kanaly.")
+        self.assertNotIn("foreign-letter", c)
+        self.assertNotIn("y-vs-ý", c)
+        self.assertIn("foreign-letter", cats("Ol vagt geldi."))
+
+    def test_hope_this_helps_variants(self):
+        for t in ("Umyt edýärin, bu maglumatlar size ýarar.", "Umyt edýärin, ol size gerek bolar:"):
+            self.assertIn("chatbot-residue", cats(t))
+        self.assertNotIn("chatbot-residue", cats("Ol ýeňjekdigine umyt edýärin, bu ýyl."))
 
     def test_dashes_in_short_text(self):
         self.assertIn("dashes", cats("Işe pyýada gidiň \u2014 basgançakdan peýdalanyň \u2014 agşamlar gezelenç ediň."))

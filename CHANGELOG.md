@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.7
+
+- Quotes keep their own punctuation. Inside «...» only the quotation marks change, in any language, and the dash and connector rules do not apply there. In a translation the speaker's marks carry over one for one: a dash stays a dash. Found in two tests where a translation turned every dash inside a quote into a comma.
+- Set formulas of the genre are not "corrected" by grammar: `berk jan saglyk` stays as it is in a list of wishes.
+- Translations restore the Turkmen form of names and places spelled the Russian way (`Мурадов` → `Myradow`, `Эрк-Кала` → `Erkgala`, `Хаузханское водохранилище` → `Hanhowuz suw howdany`); a new table in `references/turkmen-tells.md` lists the common changes.
+- When the source contradicts itself or names a well-known thing wrongly (`канал Мургаб` for the river Murgap), the skill writes the correct form and lists it under "to verify" with the source's wording.
+- Added `basseýn` (a river basin) and `derýa`/`kanal` to the table of words that look interchangeable.
+- A request with several parts is checked for every part before the answer goes out.
+- `barla.py` now catches a plural after a number with several words in between (`9 sany uly baýramçylyk konsertleri`, `5 daşary ýurt media guramalary`), and stops at verbs, case forms, units and fixed compounds (`iki çagalar bagy`, `14 reportaž taýýarladylar`). It no longer counts dashes inside quotes, in ranges (`7:00–9:00`) or at the start of dialogue turns, no longer flags Roman numerals (`XIX`, `XX`) or brand names such as `YouTube`, and catches more forms of "I hope this helps" (`Umyt edýärin, bu ... size ýarar`).
+- Added two corpus cases: a long Turkmen annual report and a long Russian article translated into Turkmen.
+
 ## 1.1.6
 
 - Added a table of words that look interchangeable but are not, starting with `howuz` (a built basin: `ýüzüş howzy`) and `howdan` (a reservoir in the open), confirmed by a native speaker after a translation test produced `ýüzüş howdany` for a pool in a sports complex.

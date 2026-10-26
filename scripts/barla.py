@@ -118,7 +118,7 @@ AI_PHRASES = [
      "Chatbot offer of help. Remove.", False),
     (r"başga sorag(yňyz|laryňyz) (bar bolsa|ýüze çyksa)", "chatbot-residue",
      "Chatbot closing. Remove.", False),
-    (r"\bumyt edýärin,?\s+bu (size )?(kömek|peýdaly)", "chatbot-residue",
+    (r"\bumyt edýärin,?\s+(bu|ol|şu)\b[^.!?\n]{0,40}?\b(size|siziň|kömek|peýdaly|ýarar)", "chatbot-residue",
      "'I hope this helps'. Remove.", False),
     (r"^\s*(elbetde|hökman)\s*[!.,]", "chatbot-residue",
      "Opening 'Elbetde!' is a chatbot wrapper.", False),
@@ -256,6 +256,11 @@ def add(findings, text, pos, sev, cat, msg, snippet, fix=None):
     findings.append(item)
 
 
+ROMAN_RE = re.compile(r"^[IVXLCDM]+$")
+# Foreign names that keep their own spelling.
+FOREIGN_NAMES = {"youtube", "yahoo", "toyota", "hyundai", "sony", "yamaha", "yandex"}
+
+
 def last_vowel(s):
     for ch in reversed(s):
         if ch in VOWELS:
@@ -288,7 +293,7 @@ def check_words(text, masked, allow, findings):
                 "Turkish letter (ı, İ or ğ). Turkmen uses y / i / g.", word)
         else:
             foreign = sorted(set(ch for ch in low if ch in "cqvx"))
-            if foreign:
+            if foreign and not ROMAN_RE.match(word):
                 add(findings, text, pos, "info" if is_cap else "warn", "foreign-letter",
                     "Letter(s) %s are not in the Turkmen alphabet (c→ç/s, v→w, x→ks/h, q→k). "
                     "Fine only in a foreign name kept in its original spelling." % ", ".join(foreign),
@@ -299,7 +304,8 @@ def check_words(text, masked, allow, findings):
         # peydaly -> peýdaly, bay -> baý.
         ym = (re.search(r"y(?=[aeäioöuü])", low)
               or re.search(r"(?<=[aeäioöuü])y(?=[^aeäioöuüyý]|$)", low))
-        if ym:
+        brand = any(ch.isupper() for ch in word[1:]) and not word.isupper()  # YouTube, iPhone
+        if ym and not brand and low not in FOREIGN_NAMES:
             add(findings, text, pos + ym.start(), "info" if is_cap else "warn", "y-vs-ý",
                 "'y' next to another vowel: Turkmen writes ý here (ýa, ýe, ýo, peýda, baý).", word,
                 word[:ym.start()] + ("Ý" if word[ym.start()] == "Y" else "ý") + word[ym.start() + 1:])
@@ -362,6 +368,20 @@ TEN_WORDS = {1: "on", 2: "ýigrimi", 3: "otuz", 4: "kyrk", 5: "elli", 6: "altmy�
 NUMBER_WORDS = set(UNIT_WORDS.values()) | set(TEN_WORDS.values()) | {"ýüz", "müň", "million", "milliard"}
 PLURAL_OK_AFTER_NUMBER = {"dollar", "dollary", "dollara", "dollarda", "dollardan"}
 # Words that may stand between a number and its noun (12 sany täze kompýuter).
+# Words after a number that end the noun phrase: units and counters.
+MEASURE_WORDS = {"gezek", "esse", "göterim", "sagat", "minut", "gün", "aý", "ýyl", "hepde", "asyr",
+                 "km", "kilometr", "metr", "gektar", "ga", "tonna", "kilogram", "manat", "orunlyk"}
+# Function words that end the noun phrase after a number.
+PHRASE_BREAKERS = {"we", "hem", "hem-de", "ýa-da", "bilen", "üçin", "ýaly", "bolsa", "soň", "öň", "bäri",
+                   "çenli", "gowrak", "golaý", "töweregi", "bar", "ýok", "däl", "diňe", "köp", "az", "-da", "-de"}
+# Plural words that head a fixed compound: çagalar bagy, ýaşlar merkezi.
+PLURAL_COMPOUND_HEADS = {"çagalar", "ýaşlar", "zenanlar", "weteranlar"}
+# Verb forms that end like a plural (okap biler, gowy bolar).
+PLURAL_LOOKALIKES = {"biler", "bilerler", "geler", "bolar", "galar", "alar", "salar", "güler", "öler"}
+# A word with one of these endings is a case form, verb or adverb, not part of
+# the noun phrase between a number and its noun.
+STOP_ENDINGS = (r"(dan|den|da|de|ta|te|dy|di|dyr|dir|ýar|ýär|ýan|ýän|ýa|ýe|ar|er|yp|ip|up|üp|"
+                r"ny|ni|na|ne|nyň|niň|ky|ki|ça|çe|mak|mek|jak|jek|ly|li|dek|y|i)$")
 BETWEEN_NUMBER_AND_NOUN = {
     "sany", "täze", "köne", "uly", "kiçi", "häzirki", "zaman", "gowy", "ýaş", "ak", "gara",
     "gyzyl", "ýaşyl", "gök", "sary", "beýik", "giň", "uzyn", "gysga", "agyr", "ýeňil",
@@ -396,24 +416,44 @@ def check_numbers(text, masked, findings):
             add(findings, text, m.start(), "error", "ordinal",
                 "Ordinal suffix follows the spoken last word (%s): write %s-%s." % (word, m.group(1), right),
                 m.group(0), "%s-%s" % (m.group(1), right))
-    # Plural noun right after a cardinal number (üç kitaplar -> üç kitap)
-    num = r"(?:\d[\d\s.,]*|%s)" % "|".join(sorted(NUMBER_WORDS, key=len, reverse=True))
-    between = r"(?:(?:%s)\s+){0,3}" % "|".join(sorted(BETWEEN_NUMBER_AND_NOUN, key=len, reverse=True))
-    for m in re.finditer(r"(?<![\w-])" + num + r"\s+(?:(?:müň|million|milliard)\s+)?" + between + r"([^\W\d_]+)",
-                         masked, re.IGNORECASE):
-        noun = m.group(1)
-        low = norm_lower(noun)
-        if low in PLURAL_OK_AFTER_NUMBER or low in NUMBER_WORDS:
-            continue
+    # Plural noun after a cardinal number (üç kitaplar -> üç kitap), also with
+    # words in between (9 sany uly baýramçylyk konsertleri).
+    num = r"(?:\d[\d\s.,]*\d|\d|%s)" % "|".join(sorted(NUMBER_WORDS, key=len, reverse=True))
+    for m in re.finditer(r"(?<![\w-])" + num + r"(?=\s)", masked, re.IGNORECASE):
         # "bir" is also an article or part of a phrase: diňe bir, her bir, hiç bir, ýene bir.
         before = norm_lower(masked[max(0, m.start() - 12):m.start()])
         if norm_lower(m.group(0)).startswith("bir") and re.search(r"(diňe|her|hiç|ýene|haýsy)\s+$", before):
             continue
-        if re.search(r"(lar|ler)(y|i|a|e|da|de|dan|den|yň|iň|y?n?y?)?$", low) and len(low) > 4:
-            stem = re.sub(r"(lar|ler).*$", "", low)
-            if last_vowel(stem):
-                add(findings, text, m.start(1), "warn", "plural-after-number",
-                    "A noun after a number stays singular (üç kitap, 40 talyp).", noun)
+        words = list(re.finditer(r"[^\W\d_]+(?:-[^\W\d_]+)?", masked[m.end():m.end() + 120]))
+        prev_end = 0
+        for i, w in enumerate(words[:5]):
+            gap = masked[m.end() + prev_end:m.end() + w.start()]
+            if gap.strip():  # punctuation or a digit ends the noun phrase
+                break
+            prev_end = w.end()
+            low = norm_lower(w.group(0))
+            if low in ("müň", "million", "milliard") and i == 0:
+                continue
+            if (low in PLURAL_OK_AFTER_NUMBER or low in NUMBER_WORDS or low in PHRASE_BREAKERS
+                    or re.sub(r"(y|i|sy|si|a|e|da|de|dan|den|yň|iň)$", "", low) in MEASURE_WORDS):
+                break
+            if re.search(r"(dy|di|du|dü|ýar|ýär|dyr|dir|ypdyr|ipdir|jak|jek)(lar|ler)$", low):
+                break  # a verb with a plural person ending: 14 reportaž taýýarladylar
+            if re.search(r"(lar|ler)(y|i|a|e|da|de|dan|den|yň|iň|y?n?y?)?$", low) and len(low) > 4 \
+                    and last_vowel(re.sub(r"(lar|ler).*$", "", low)):
+                nxt = words[i + 1].group(0) if i + 1 < len(words) else ""
+                if low in PLURAL_LOOKALIKES:
+                    break
+                if (low in PLURAL_COMPOUND_HEADS and re.search(r"(y|i)$", norm_lower(nxt))
+                        and not re.search(r"(dy|di)$", norm_lower(nxt))
+                        and not masked[m.end() + w.end():m.end() + words[i + 1].start()].strip()):
+                    break  # çagalar bagy: a fixed compound, not a plural after the number
+                add(findings, text, m.end() + w.start(), "warn", "plural-after-number",
+                    "A noun after a number stays singular (üç kitap, 40 talyp).", w.group(0))
+                break
+            if low in BETWEEN_NUMBER_AND_NOUN or not re.search(STOP_ENDINGS, low):
+                continue
+            break
 
 
 def check_phrases(text, findings):
@@ -483,7 +523,11 @@ def check_punctuation(text, findings, word_count):
             "Turkmen uses «...» quotation marks, not \"...\" or “...”.", text[m.start()])
         break  # one report is enough; the editor fixes all of them
 
-    dashes = len(re.findall("[\u2014\u2013]", text))
+    # Dashes inside quotes are the speaker's, and ranges (7:00–9:00, 12–16-njy) are normal.
+    own = re.sub(r"«[^»]*»|\"[^\"\n]*\"|“[^”]*”", " ", text)
+    own = re.sub(r"(?<=\d)[\u2013\u2014](?=\d)", " ", own)
+    own = re.sub(r"(?m)^\s*[\u2014\u2013]", " ", own)  # dialogue turns
+    dashes = len(re.findall("[\u2014\u2013]", own))
     if word_count and ((dashes >= 3 and dashes / word_count > 0.015)
                        or (dashes >= 2 and dashes / word_count > 0.03)):
         add(findings, text, text.find("\u2014") if "\u2014" in text else text.find("\u2013"),

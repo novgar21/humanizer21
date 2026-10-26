@@ -1,0 +1,52 @@
+# Correct Turkmen words the dictionary does not know. One per line.
+# "stem/model" gives the stem the endings of a dictionary word with the same
+# last vowel and final sound. Add a word only when you are sure it is right.
+
+# Loanwords and terms
+web
+onlaýn
+welosiped/kompýuter
+trenažýor/koridor
+telemarafon/telefon
+multfilm/film
+olimpiada/sahypa
+meliorator/operator
+kollektor/koridor
+indigo
+indigodan
+saraja
+polosy
+lift
+liftiň
+teleforumda
+
+# Native words and derived stems
+goşundy/ýazgy
+ýyladyşhana/hassahana
+sportçy/awçy
+tälimçi/işçi
+ýazylyjy/okyjy
+meýilleşdir/ýerleşdir
+eminler
+tanalyşy
+ýaşyllaşdyrmak
+
+# Forms with several endings the dictionary does not combine
+ýyldakydan
+günlerindäkiden
+
+# Turkmen -yp + -myş (hearsay), confirmed by a native speaker
+tanalypmyş
+gelipmiş
+
+# More words found in test texts
+moda
+teleradio
+goldawçy/awçy
+ýatynda
+jikme-jik
+ýüzbe-ýüz
+
+# Forms of bilmek used as "as you know"
+bilşiňiz
+bilşimiz

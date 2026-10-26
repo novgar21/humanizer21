@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- New `barla.py --dict` mode lists words that a Turkmen word list does not know, as notes. The list is the Hunspell dictionary of nazartm/turkmen-spell-check-dictionary (about 62,000 stems, Apache 2.0), shipped compressed in `scripts/sozluk/`, plus our additions in `scripts/sozluk/gosmaca.txt`. `barla.py` reads it with its own code and stays standard-library only; on all 1,954 words of the test corpus it gives the same answers as a reference Hunspell implementation. Names, sentence starts, Roman numerals, endings after numbers and words split by hidden characters are skipped.
+- It catches slips the other checks miss, such as `welaýatyda` for `welaýatynda`. On the ten accepted results of the corpus it leaves six notes, all on words waiting for a native speaker's answer (`düwüni`, `fabrigini`, `howzynda`, `howzyny`, `basseýninde`, `münber`).
+- The skill treats a note from the word list as "check this word": it never changes a word only because the list does not know it.
+- `-yp` + `-myş` (`tanalypmyş`, `gelipmiş`) is now described as Turkmen hearsay, kept as the source has it; only the bare Turkish `gelmiş` is an error. Confirmed by a native speaker.
+- Added `dokamak` and `daňmak` to the table of words that look interchangeable: carpets and their knots are woven.
+
 ## 1.1.8
 
 - The audit now catches contradictions in any source, not only in translations: two facts that cannot both be true (`5–9-njy maý` next to `Üç günüň dowamynda`) go under "to verify" instead of being passed on silently.

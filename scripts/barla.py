@@ -533,6 +533,110 @@ def check_forms(text, masked, findings):
             m.group(0), m.group(1) + m.group(2))
 
 
+class WordList:
+    """Turkmen word list: the Hunspell files in scripts/sozluk/ plus our own additions.
+
+    The affix file of this dictionary only appends endings (no stripping, no
+    conditions, no nested affixes), so a word is known when it is a stem, or a
+    stem plus one ending allowed by that stem's flag.
+    """
+
+    def __init__(self, folder=None):
+        import gzip
+        import os
+        folder = folder or os.path.join(os.path.dirname(os.path.abspath(__file__)), "sozluk")
+        self.endings = {}  # ending -> set of flags
+        need_affix = None
+        aliases = []  # AF lines: a stem's flag "38" means the 38th flag set
+        with gzip.open(os.path.join(folder, "tk_TM.aff.gz"), "rt", encoding="utf-8") as fh:
+            af_count_seen = False
+            for line in fh:
+                parts = line.split()
+                if len(parts) >= 2 and parts[0] == "NEEDAFFIX":
+                    need_affix = parts[1]
+                if len(parts) >= 2 and parts[0] == "AF":
+                    if not af_count_seen:
+                        af_count_seen = True  # the first AF line gives the number of sets
+                    else:
+                        aliases.append(frozenset(parts[1].split(",")))
+                if len(parts) >= 4 and parts[0] == "SFX" and parts[2] not in ("Y", "N"):
+                    ending = "" if parts[3] == "0" else parts[3].split("/")[0]
+                    self.endings.setdefault(ending, set()).add(parts[1])
+        self.stems = {}  # stem -> frozenset of flags
+        self.bare_ok = set()
+        with gzip.open(os.path.join(folder, "tk_TM.dic.gz"), "rt", encoding="utf-8") as fh:
+            next(fh)  # word count
+            for line in fh:
+                word, _, flags = line.rstrip("\n").strip().partition("/")
+                if not word:
+                    continue
+                if flags.isdigit() and aliases and 0 < int(flags) <= len(aliases):
+                    found = aliases[int(flags) - 1]
+                else:
+                    found = frozenset(f for f in flags.split(",") if f)
+                old = self.stems.get(word)
+                self.stems[word] = found if old is None else old | found
+                if need_affix not in found:
+                    self.bare_ok.add(word)
+        self.extra = set()
+        path = os.path.join(folder, "gosmaca.txt")
+        if os.path.exists(path):
+            with open(path, encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.split("#")[0].strip()
+                    if not line:
+                        continue
+                    stem, _, model = line.partition("/")
+                    if model and model in self.stems:
+                        self.stems[stem] = self.stems.get(stem, frozenset()) | self.stems[model]
+                        self.bare_ok.add(stem)
+                    else:
+                        self.extra.add(stem)
+
+    def _known(self, word):
+        if word in self.extra or word in self.bare_ok:
+            return True
+        for i in range(1, len(word)):
+            flags = self.stems.get(word[:i])
+            if flags and flags & self.endings.get(word[i:], set()):
+                return True
+        return False
+
+    def known(self, word):
+        if self._known(word):
+            return True
+        if word[:1].isupper() and self._known(word[0].lower() + word[1:]):
+            return True
+        return self._known(norm_lower(word))
+
+
+def check_dictionary(text, masked, allow, findings, words):
+    seen = set()
+    for m in re.finditer(r"[^\W\d_]+(?:-[^\W\d_]+)*", masked):
+        word = m.group(0)
+        if word in seen:
+            continue
+        seen.add(word)
+        if word[0].isupper() or word.lower() in allow or ROMAN_RE.match(word):
+            continue  # names, brands, sentence starts and Roman numerals are not checked
+        if any("CYRILLIC" in unicodedata.name(ch, "") for ch in word):
+            continue
+        if m.start() and masked[m.start() - 1] in "-'’" and masked[m.start() - 2:m.start() - 1].isdigit():
+            continue  # an ending after a number: 1 200-si, 19:00-dan
+        nxt = masked[m.end():m.end() + 1]
+        prv = masked[m.start() - 1:m.start()] if m.start() else ""
+        if nxt in INVISIBLE or prv in INVISIBLE or prv in "'’":
+            continue  # split by a hidden character, which is reported on its own
+        parts = [word]
+        if "-" in word and not words.known(word):  # ýa-da, kompýuterde-de, gije-gündiz: check each part
+            parts = [p for p in word.split("-") if p not in ("da", "de")]
+        if all(words.known(p) for p in parts if len(p) > 2):
+            continue
+        add(findings, text, m.start(), "info", "unknown-word",
+            "Not in the word list. Check the spelling; a correct new word, name or term "
+            "is fine, so do not change a word only because the list does not know it.", word)
+
+
 def check_phrases(text, findings):
     low = norm_lower(text)
     # Words inside «...» belong to someone else; never flag them as AI phrases.
@@ -637,7 +741,7 @@ def check_punctuation(text, findings, word_count):
             "%d emoji found. Remove them unless the user asked for emoji or their own sample uses them." % len(emoji), "")
 
 
-def run(text, allow=()):
+def run(text, allow=(), words=None):
     allow = {a.strip().lower() for a in allow if a.strip()}
     findings = []
     masked = masked_text(text)
@@ -649,6 +753,8 @@ def run(text, allow=()):
     check_headings(text, findings)
     check_connectors(text, findings, word_count)
     check_punctuation(text, findings, word_count)
+    if words is not None:
+        check_dictionary(text, masked, allow, findings, words)
     order = {"error": 0, "warn": 1, "info": 2}
     findings.sort(key=lambda f: (f["line"], f["col"], order[f["severity"]]))
     summary = {s: sum(1 for f in findings if f["severity"] == s) for s in order}
@@ -750,6 +856,8 @@ def main(argv=None):
     p.add_argument("--fix", action="store_true",
                    help="remove invisible characters and unusual spaces; write the cleaned text to -o or standard output")
     p.add_argument("-o", "--output", help="file for the cleaned text (with --fix)")
+    p.add_argument("--dict", action="store_true",
+                   help="also list words that are not in the Turkmen word list (notes only)")
     p.add_argument("--compare", metavar="SOURCE",
                    help="also compare with the source text and list numbers, quotes, names, "
                         "table rows and list items the result seems to have lost")
@@ -773,7 +881,7 @@ def main(argv=None):
         report_out.write("cleaned: %d invisible character(s), %d tag character(s), %d unusual space(s)\n"
                          % (counts["invisible"], counts["tag"], counts["spaces"]))
 
-    result = run(text, a.allow.split(","))
+    result = run(text, a.allow.split(","), WordList() if a.dict else None)
     if a.compare:
         with open(a.compare, encoding="utf-8") as fh:
             result["compare"] = compare(fh.read(), text)

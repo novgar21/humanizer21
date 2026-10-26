@@ -110,6 +110,31 @@ class TestForms(unittest.TestCase):
         self.assertIn("turkish-word", cats("Olar geliyorlar."))
 
 
+class TestWordList(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.words = barla.WordList()
+
+    def test_known_and_unknown_forms(self):
+        for w in ("oglunyň", "agajyň", "welaýatynda", "kompýuterler", "mekdeplerde", "Türkmenistanyň", "düwni"):
+            self.assertTrue(self.words.known(w), w)
+        for w in ("ogulynyň", "agaçyň", "welaýatyda", "kompýuterlar", "mekdeplerda", "niyet", "sadece"):
+            self.assertFalse(self.words.known(w), w)
+
+    def test_additions(self):
+        for w in ("tanalypmyş", "meýilleşdirýäris", "olimpiadasy", "goşundyda", "jikme-jik"):
+            self.assertTrue(self.words.known(w), w)
+
+    def test_dict_mode_skips_names_numbers_and_quotes_marks(self):
+        r = barla.run("Gülşat Amanowa geldi. 1 200-si täze. Ahal welaýatyda ýa-da gije-gündiz.", words=self.words)
+        found = [f["text"] for f in r["findings"] if f["category"] == "unknown-word"]
+        self.assertEqual(found, ["welaýatyda"])
+        self.assertTrue(all(f["severity"] == "info" for f in r["findings"] if f["category"] == "unknown-word"))
+
+    def test_dict_mode_is_off_by_default(self):
+        self.assertNotIn("unknown-word", cats("Ahal welaýatyda."))
+
+
 class TestCompare(unittest.TestCase):
     SRC = ("Muzeýde 2 müň haly bar. Direktor Gülşat Amanowa: «Her bir haly — bu bir kitap».\n"
            "| Önüm | Sany |\n|---|---|\n| Haly | 4 800 |\n| Torba | 3 100 |\n- birinji\n- ikinji\n")

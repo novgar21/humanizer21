@@ -4,7 +4,7 @@ description: Turkmen language humanizer. Edits and writes Turkmen text (türkmen
 license: MIT
 metadata:
   author: Novruz Garryyev
-  version: "1.1.8"
+  version: "1.2.0"
 ---
 
 # humanizer21
@@ -52,6 +52,7 @@ python3 scripts/barla.py input.txt          # human-readable report
 python3 scripts/barla.py input.txt --json   # machine-readable
 python3 scripts/barla.py input.txt --fix -o clean.txt   # also remove invisible characters
 python3 scripts/barla.py final.txt --compare input.txt   # what the result lost: numbers, quotes, names, rows
+python3 scripts/barla.py input.txt --dict      # also list words the Turkmen word list does not know
 ```
 
 It flags non-Turkmen letters, `y`/`ý` slips, Turkish words, plural harmony errors, stock AI phrases, overused connectors, quotation marks, dashes, spacing and invisible Unicode characters. It is a pointer, not a judge: a foreign brand name may keep its `c` or `v`, and `diňe bir ... däl, eýsem ...` is normal in official prose. If you cannot run code, go through the same list by eye using the reference files.
@@ -96,6 +97,7 @@ Do not guess a spelling and present it as certain. When a word or form is doubtf
 
 - If you can browse, open the dictionary entry `https://enedilim.com/sozluk/soz/<word>` (the word URL-encoded, dictionary form) or the online checker `https://enedilim.com/gurallar/yazuw_barlayjy`.
 - If you cannot browse, keep the most common form you know and list the word under "to verify" in your note to the user.
+- `barla.py --dict` lists words its word list does not know. Many are correct (new words, terms, forms with several endings), so never change a word only because the list does not know it; check it, and list it under "to verify" if you are still unsure.
 
 The same goes for word choice, which no spelling check catches. When you translate or choose between two close words (`howuz` and `howdan`, a sports `tribuna` and a `münber`), check the pair in `references/punctuation-lexicon.md`, "Words that look interchangeable"; if it is not there and you are not sure, list your choice under "to verify" with the alternative.
 

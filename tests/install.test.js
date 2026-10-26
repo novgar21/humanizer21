@@ -16,7 +16,7 @@ try {
   const skills = path.join(tmp, "skills");
   run("--dir", skills);
   const dest = path.join(skills, "humanizer21");
-  for (const f of ["SKILL.md", "LICENSE", "scripts/barla.py", "references/orthography.md"]) {
+  for (const f of ["SKILL.md", "LICENSE", "scripts/barla.py", "references/orthography.md", "scripts/sozluk/tk_TM.dic.gz", "scripts/sozluk/gosmaca.txt"]) {
     assert.ok(fs.existsSync(path.join(dest, f)), `missing ${f}`);
   }
   assert.ok(!fs.existsSync(path.join(dest, "bin")), "bin/ must not be installed");

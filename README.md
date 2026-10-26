@@ -163,11 +163,14 @@ python3 scripts/barla.py text.txt --allow "Coca-Cola,Microsoft"
 cat text.txt | python3 scripts/barla.py -
 python3 scripts/barla.py text.txt --fix -o clean.txt
 python3 scripts/barla.py result.txt --compare source.txt
+python3 scripts/barla.py text.txt --dict
 ```
 
 `--fix` removes characters a reader cannot see: zero-width spaces, soft hyphens, direction marks and Unicode tag characters, and turns non-breaking, thin and wide spaces into normal ones. Text pasted from chat windows, PDFs and web pages often carries them, and they break site search, line breaks and character counts. Letters, punctuation and line breaks stay as they are.
 
 `--compare` checks a result against its source and lists what may have been lost: numbers, quotes that changed, names, table rows and list items. It works for translations too, where it compares numbers, the count of quotes, table rows and list items.
+
+`--dict` also lists words that a Turkmen word list does not know, as notes. The list is the Hunspell dictionary of [turkmen-spell-check-dictionary](https://github.com/nazartm/turkmen-spell-check-dictionary) (Apache 2.0) plus our own additions in `scripts/sozluk/gosmaca.txt`. It catches slips such as `welaýatyda`, `agaçyň` or `kompýuterlar`, but it does not know every correct word: new terms, names and forms with several endings show up too. Treat a note as "check this word", not as an error. On the ten accepted results of the test corpus it leaves six notes, all on words still waiting for a native speaker's answer.
 
 Sample output:
 
@@ -192,6 +195,7 @@ references/punctuation-lexicon.md  punctuation, quotes, dialogue, loanwords, reg
 references/styles.md             news, letters, documents, social posts, chat
 references/examples.md           before and after
 scripts/barla.py                 the checker
+scripts/sozluk/                  Turkmen word list for barla.py --dict (Apache 2.0) and our additions
 prompts/system-prompt.md         one-file version for other assistants
 bin/install.js                   the npx installer
 scripts/validate-package.py      package check: versions, manifests, pattern numbers, sizes

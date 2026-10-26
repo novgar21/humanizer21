@@ -35,3 +35,7 @@ Humanizer in turn draws on Wikipedia's [Signs of AI writing](https://en.wikipedi
 ## Ene dilim
 
 The Turkmen orthography, morphology, punctuation and lexicon rules in `references/` are summarized in our own words from [Ene dilim](https://enedilim.com/) and are used with the permission of the Ene dilim project. No text or dictionary data from Ene dilim is copied into this repository.
+
+## Turkmen spell-check dictionary by nazartm
+
+`scripts/sozluk/tk_TM.aff.gz` and `scripts/sozluk/tk_TM.dic.gz` are the Hunspell files of [turkmen-spell-check-dictionary](https://github.com/nazartm/turkmen-spell-check-dictionary), compressed with gzip and otherwise unchanged. `barla.py --dict` reads them. They are distributed under the Apache License 2.0; the full license text is in `scripts/sozluk/LICENSE`. `scripts/sozluk/gosmaca.txt` (our additions) is part of humanizer21 and under its MIT License.

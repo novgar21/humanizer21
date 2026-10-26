@@ -88,6 +88,13 @@ class TestForms(unittest.TestCase):
                  if f["category"] == "dropped-vowel"]
         self.assertEqual(found, ["Ogulynyň", "Agyzy"])
 
+    def test_rounding_after_dropped_u_and_basseyn(self):
+        fixes = [f.get("suggestion") for f in barla.run("Toplumyň howzynda, açyk howzyny, oglynyň toýy.")["findings"]
+                 if f["category"] == "dropped-vowel"]
+        self.assertEqual(fixes, ["howzunda", "howzuny", "oglunyň"])
+        self.assertNotIn("dropped-vowel", cats("Toplumyň howzunda, howzy, oglunyň, ogly, agzynyň."))
+        self.assertIn("word-choice", cats("Murgap derýasynyň basseýninde."))
+
     def test_consonant_change(self):
         fixes = [f.get("suggestion") for f in barla.run("Agaçyň gabygy, kitapy okady.")["findings"]
                  if f["category"] == "consonant-change"]
@@ -116,9 +123,9 @@ class TestWordList(unittest.TestCase):
         cls.words = barla.WordList()
 
     def test_known_and_unknown_forms(self):
-        for w in ("oglunyň", "agajyň", "welaýatynda", "kompýuterler", "mekdeplerde", "Türkmenistanyň", "düwni"):
+        for w in ("oglunyň", "agajyň", "welaýatynda", "kompýuterler", "mekdeplerde", "Türkmenistanyň", "düwüni", "fabrigini", "münber"):
             self.assertTrue(self.words.known(w), w)
-        for w in ("ogulynyň", "agaçyň", "welaýatyda", "kompýuterlar", "mekdeplerda", "niyet", "sadece"):
+        for w in ("ogulynyň", "agaçyň", "welaýatyda", "kompýuterlar", "mekdeplerda", "niyet", "sadece", "düwni"):
             self.assertFalse(self.words.known(w), w)
 
     def test_additions(self):

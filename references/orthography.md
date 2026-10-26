@@ -153,9 +153,13 @@ Two-syllable words with short vowels, ending in `z l n r s ş` with a narrow sec
   | `ogul` | `ogly` | `oglunyň` | `ogluň` | `ogluňyň` |
   | `agyz` | `agzy` | `agzynyň` | `agzyň` | `agzyňyň` |
   | `burun` | `burny` | `burnunyň` | `burnuň` | `burnuňyň` |
+  | `howuz` | `howzy` | `howzunyň` | `howzuň` | `howzuňyň` |
+
+  When the dropped vowel was `u` (`ogul`, `burun`, `howuz`), the next suffix vowel is `u`, not `y`: `oglunyň`, `howzunda`, `howzuny` (not `howzynda`, `howzyny`). Confirmed by a native speaker. After a dropped `y` (`agyz`) it stays `y`: `agzynyň`.
 
   `Ogluň toýy` means "your son's wedding"; a woman talking about her own son's wedding in the third person is `oglunyň toýy`. Found in a test where `ogulynyň` became `ogluň`.
 - Nouns in `-ýyş/-ýiş`: `ýaşaýyş → ýaşaýşy`, `sözleýiş → sözleýşi`
+- Not every word drops the vowel: `düwün → düwüni` (not `düwni`). Confirmed by a native speaker; the word list in `scripts/sozluk/` has `düwni` and is wrong here.
 
 Check unusual words in the dictionary; the rule has conditions that vary.
 

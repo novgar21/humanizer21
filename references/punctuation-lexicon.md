@@ -209,13 +209,14 @@ Machine Turkmen often picks the wrong one of two close words, and neither `barla
 
 | Word | Means | Use for | Not for |
 |---|---|---|---|
-| `howuz` (`howzy`) | a small, built basin of water, open or indoor | a swimming pool (`ýüzüş howzy`), a fountain basin | a lake or reservoir |
+| `howuz` (`howzy`, `howzunda`, `howzuny`) | a built basin of water, open or indoor; also the area a river drains | a swimming pool (`ýüzüş howzy`), a fountain basin, a river basin (`Murgap derýasynyň howzunda`, Russian `в бассейне реки`) | a lake or reservoir |
 | `howdan` | a body of water in the open, a reservoir or pond | a reservoir, a pond in nature | a pool in a sports complex |
-| `basseýn` (`derýanyň basseýni`) | the area a river drains | `Murgap derýasynyň basseýni` (Russian `бассейн реки`) | a swimming pool |
+| `basseýn` | not used | write `howuz` instead, for a pool and for a river basin | anything |
+| `münber` | stands for spectators (Russian `трибуна`) | `600 tomaşaça niýetlenen münber` | |
 | `dokamak` and `daňmak` | weave, and tie | a carpet and its knots are woven: `düwün dokamak`, `haly dokamak` | `daňmak` for carpet knots in your own text (a quote keeps the speaker's word) |
 | `derýa` and `kanal` | a river, and a channel dug by people | `Murgap derýasy`; `suwaryş kanaly` | each other: check which one the place is |
 
-Confirmed by a native speaker after tests in which a 25-metre pool in a sports complex came out as `ýüzüş howdany`, and the river Murgap as `Murgap kanaly`. Add further pairs here as they turn up.
+Confirmed by a native speaker after tests in which a 25-metre pool in a sports complex came out as `ýüzüş howdany`, the river Murgap as `Murgap kanaly`, and a river basin as `basseýn`. Add further pairs here as they turn up.
 
 ## 11. Old and new words
 

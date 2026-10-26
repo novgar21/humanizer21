@@ -471,7 +471,7 @@ def check_numbers(text, masked, findings):
 # Two-syllable words that drop their second vowel before a vowel suffix
 # (ogul -> ogly, agyz -> agzy). Words that are also verbs or other stems
 # (bagyr-, asyl-, erin-, boýun) are left out on purpose.
-DROPPED_VOWEL = {"ogul": "ogl", "agyz": "agz", "burun": "burn", "köwüş": "köwş", "pasyl": "pasl",
+DROPPED_VOWEL = {"ogul": "ogl", "howuz": "howz", "agyz": "agz", "burun": "burn", "köwüş": "köwş", "pasyl": "pasl",
                  "ylym": "ylm", "nesil": "nesl", "deňiz": "deňz", "nagyş": "nagş"}
 # Words of two or more syllables whose final k p t ç turns into g b d j
 # before a vowel suffix (agaç -> agajy, kitap -> kitaby).
@@ -502,6 +502,16 @@ def check_forms(text, masked, findings):
                     # After a dropped vowel the ending may change too (ogly, oglunyň), so no automatic fix.
                     add(findings, text, m.start(), "error", cat, msg, word, fix)
                     break
+        # After a dropped u the next vowel is u: oglunyň, howzunda (not oglynyň, howzynda)
+        rm = re.match(r"(ogl|burn|howz)y([nň].*)$", low)
+        if rm:
+            fix = rm.group(1) + "u" + rm.group(2)
+            add(findings, text, m.start(), "error", "dropped-vowel",
+                "After a dropped u the next vowel is u (oglunyň, howzunda, howzuny).", word,
+                fix[0].upper() + fix[1:] if word[0].isupper() else fix)
+        if low.startswith("basseýn"):
+            add(findings, text, m.start(), "warn", "word-choice",
+                "Turkmen uses howuz for a pool and for a river basin (ýüzüş howzy, derýanyň howzunda), not basseýn.", word)
         # Turkish present continuous: geliyor, gidiyorlar
         if re.search(r"[^\W\d_](iyor|ıyor|uyor|üyor)(um|sun|uz|lar|du|muş)?$", low):
             add(findings, text, m.start(), "warn", "turkish-word",
@@ -579,12 +589,16 @@ class WordList:
                 if need_affix not in found:
                     self.bare_ok.add(word)
         self.extra = set()
+        self.forbidden = set()  # wrong forms the dictionary accepts
         path = os.path.join(folder, "gosmaca.txt")
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:
                 for line in fh:
                     line = line.split("#")[0].strip()
                     if not line:
+                        continue
+                    if line.startswith("!"):
+                        self.forbidden.add(line[1:])
                         continue
                     stem, _, model = line.partition("/")
                     if model and model in self.stems:
@@ -594,6 +608,8 @@ class WordList:
                         self.extra.add(stem)
 
     def _known(self, word):
+        if word in self.forbidden:
+            return False
         if word in self.extra or word in self.bare_ok:
             return True
         for i in range(1, len(word)):

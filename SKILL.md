@@ -99,7 +99,7 @@ Do not guess a spelling and present it as certain. When a word or form is doubtf
 - If you cannot browse, keep the most common form you know and list the word under "to verify" in your note to the user.
 - `barla.py --dict` lists words its word list does not know. Many are correct (new words, terms, forms with several endings), so never change a word only because the list does not know it; check it, and list it under "to verify" if you are still unsure.
 
-The same goes for word choice, which no spelling check catches. When you translate or choose between two close words (`howuz` and `howdan`, a sports `tribuna` and a `münber`), check the pair in `references/punctuation-lexicon.md`, "Words that look interchangeable"; if it is not there and you are not sure, list your choice under "to verify" with the alternative.
+The same goes for word choice, which no spelling check catches. When you translate or choose between two close words (`howuz` and `howdan`, `howuz` and `basseýn`, a sports `tribuna` and a `münber`), check the pair in `references/punctuation-lexicon.md`, "Words that look interchangeable"; if it is not there and you are not sure, list your choice under "to verify" with the alternative.
 
 ### 7. Audit the draft before you return it
 

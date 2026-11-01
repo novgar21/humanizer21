@@ -63,6 +63,37 @@ class TestRunCorpus(unittest.TestCase):
         finally:
             shutil.rmtree(tmp)
 
+    def test_api_stop_keeps_the_answers_so_far(self):
+        # A key that stops working mid-run must end with code 2 and a report, not a traceback.
+        import types
+        from unittest import mock
+
+        calls = []
+
+        def fake_ask(client, system, message, model, effort):
+            calls.append(message)
+            if len(calls) > 1:
+                raise RuntimeError("invalid x-api-key")
+            usage = types.SimpleNamespace(input_tokens=1, cache_read_input_tokens=0, cache_creation_input_tokens=0, output_tokens=1)
+            case = rc.cases()[0]
+            return wrap(rc.read(os.path.join(rc.CORPUS, case, "reference.txt"))), usage
+
+        fake = types.ModuleType("anthropic")
+        fake.Anthropic = lambda: object()
+        tmp = tempfile.mkdtemp()
+        try:
+            with mock.patch.dict(sys.modules, {"anthropic": fake}), \
+                    mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": "x"}), \
+                    mock.patch.object(rc, "ask", fake_ask), \
+                    open(os.devnull, "w") as null, mock.patch("sys.stdout", null), mock.patch("sys.stderr", null):
+                code = rc.main(["--case", rc.cases()[0], "--case", rc.cases()[1], "--runs", "2", "--jobs", "1", "--out", tmp])
+            self.assertEqual(code, 2)
+            report = rc.read(os.path.join(tmp, "report.md"))
+            self.assertIn("1 / 1", report)
+            self.assertIn("Not run (stopped early): %s" % rc.cases()[1], report)
+        finally:
+            shutil.rmtree(tmp)
+
 
 if __name__ == "__main__":
     unittest.main()

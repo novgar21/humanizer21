@@ -12,7 +12,9 @@ finished text is taken from between the markers the harness asks for, so
 the list of changes after it is not graded, and checked with tests/grade.py.
 
 A case passes when at least --need of its --runs answers pass every check.
-The script exits with code 1 if any case fails. It needs ANTHROPIC_API_KEY
+Requests go out --jobs at a time. The script exits with code 1 if any case
+fails, and with code 2 if the API stops answering (a bad key, for example);
+the report then covers the answers received so far. It needs ANTHROPIC_API_KEY
 unless --dry-run or --answers is given. Answers and a report go to --out.
 """
 
@@ -21,6 +23,7 @@ import json
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -111,6 +114,7 @@ def main(argv=None):
     p.add_argument("--case", action="append", help="run only this case (repeatable)")
     p.add_argument("--runs", type=int, default=3, help="answers per case (default 3)")
     p.add_argument("--need", type=int, help="passing answers a case needs (default: runs - 1, at least 1)")
+    p.add_argument("--jobs", type=int, default=6, help="requests sent at the same time (default 6)")
     p.add_argument("--variant", choices=["skill", "prompt"], default="skill")
     p.add_argument("--model", default=MODEL)
     p.add_argument("--effort", default="high", choices=["low", "medium", "high", "xhigh", "max"])
@@ -140,27 +144,47 @@ def main(argv=None):
 
         client = anthropic.Anthropic()
 
-    rows, totals = [], {"input": 0, "cache_read": 0, "cache_write": 0, "output": 0}
-    for case in selected:
-        passed, failures = 0, []
-        for n in range(1, args.runs + 1):
-            if args.answers:
-                path = os.path.join(args.answers, case, "%d.txt" % n)
-                answer = read(path) if os.path.exists(path) else ""
-            else:
-                answer, usage = ask(client, system, user_message(case), args.model, args.effort)
+    jobs = [(case, n) for case in selected for n in range(1, args.runs + 1)]
+    totals = {"input": 0, "cache_read": 0, "cache_write": 0, "output": 0}
+    results = {}
+
+    def one(job):
+        case, n = job
+        if args.answers:
+            path = os.path.join(args.answers, case, "%d.txt" % n)
+            return job, (read(path) if os.path.exists(path) else ""), None
+        answer, usage = ask(client, system, user_message(case), args.model, args.effort)
+        os.makedirs(os.path.join(args.out, case), exist_ok=True)
+        with open(os.path.join(args.out, case, "%d.txt" % n), "w", encoding="utf-8") as fh:
+            fh.write(answer)
+        return job, answer, usage
+
+    fatal = None
+    with ThreadPoolExecutor(max_workers=1 if args.answers else args.jobs) as pool:
+        pending = [pool.submit(one, job) for job in jobs]
+        for future in as_completed(pending):
+            try:
+                (case, n), answer, usage = future.result()
+            except Exception as exc:  # a bad key or a dead API: stop, keep what we have
+                if fatal is None:
+                    fatal = exc
+                    for f in pending:
+                        f.cancel()
+                continue
+            if usage is not None:
                 totals["input"] += usage.input_tokens
                 totals["cache_read"] += usage.cache_read_input_tokens or 0
                 totals["cache_write"] += usage.cache_creation_input_tokens or 0
                 totals["output"] += usage.output_tokens
-                os.makedirs(os.path.join(args.out, case), exist_ok=True)
-                with open(os.path.join(args.out, case, "%d.txt" % n), "w", encoding="utf-8") as fh:
-                    fh.write(answer)
             failed = check(case, answer)
-            passed += not failed
-            failures.append(failed)
+            results[case, n] = failed
             print("%-24s run %d: %s" % (case, n, "OK" if not failed else "FAIL (%d)" % len(failed)), flush=True)
-        rows.append({"case": case, "passed": passed, "runs": args.runs, "ok": passed >= need, "failures": failures})
+
+    rows = []
+    for case in selected:
+        failures = [results[case, n] for n in range(1, args.runs + 1) if (case, n) in results]
+        passed = sum(not f for f in failures)
+        rows.append({"case": case, "passed": passed, "runs": len(failures), "ok": passed >= need, "failures": failures})
 
     report = render(rows, need, args, totals)
     os.makedirs(args.out, exist_ok=True)
@@ -172,6 +196,9 @@ def main(argv=None):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
             fh.write(report)
     print("\n" + report)
+    if fatal is not None:
+        print("Stopped early: %s" % fatal, file=sys.stderr)
+        return 2
     return 0 if all(r["ok"] for r in rows) else 1
 
 
@@ -185,7 +212,10 @@ def render(rows, need, args, totals):
         "| Case | Passed | Result |",
         "|---|---|---|",
     ]
-    lines += ["| %s | %d / %d | %s |" % (r["case"], r["passed"], r["runs"], "OK" if r["ok"] else "FAIL") for r in rows]
+    lines += ["| %s | %d / %d | %s |" % (r["case"], r["passed"], r["runs"], "OK" if r["ok"] else "FAIL") for r in rows if r["runs"]]
+    skipped = [r["case"] for r in rows if not r["runs"]]
+    if skipped:
+        lines += ["", "Not run (stopped early): %s." % ", ".join(skipped)]
     if not args.answers:
         lines += ["", "Tokens: %(input)d input, %(cache_read)d cache read, %(cache_write)d cache write, %(output)d output." % totals]
     failed = [(r["case"], i + 1, f) for r in rows for i, f in enumerate(r["failures"]) if f]

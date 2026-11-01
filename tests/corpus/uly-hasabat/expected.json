@@ -96,7 +96,7 @@
   "must_not": [
     "Elbetde",
     "Umyt edýärin",
-    "için",
+    "re:\\bi[cç]in\\b",
     "daha",
     "ösebilir",
     "Türkmenistanyn",

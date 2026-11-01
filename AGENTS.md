@@ -30,6 +30,7 @@ humanizer21 is an agent skill written in Markdown, with one Python checker and a
 - **Facts.** Examples in the references must never add a fact in the "after" text that the "before" text lacks.
 - **Checker.** Every new check in `barla.py` gets a test in `tests/test_barla.py`, including a test that correct text stays clean.
 - **Corpus.** When a rewrite goes wrong in a way the rules should have prevented, add the text to `tests/corpus/` as a new case with `input.txt`, `expected.json` and a corrected `reference.txt`. Run `python3 tests/grade.py` on the skill's next answer before releasing a fix.
+- **Model run.** `tests/run_corpus.py` sends every corpus case to the model and grades the answers with `grade.py`; run it by hand in GitHub Actions (`Corpus run` > Run workflow); one full run costs about 8 USD. Run it before and after a change to `SKILL.md`, `references/` or `prompts/`, and do not merge a change that makes a case fail that passed before. Locally: `uv run --no-project --with anthropic==2.3.0 python tests/run_corpus.py --runs 1`.
 - **History.** Add a `CHANGELOG.md` note for any change in behavior.
 
 ## Checks before publishing

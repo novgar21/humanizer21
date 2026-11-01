@@ -13,7 +13,7 @@
   ],
   "must_not": [
     "Elbetde",
-    "için",
+    "re:\\bi[cç]in\\b",
     "Şuny bellemek",
     "rol oýna",
     "täze sahypa",

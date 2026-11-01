@@ -95,5 +95,34 @@ class TestRunCorpus(unittest.TestCase):
             shutil.rmtree(tmp)
 
 
+class TestGradeAllowances(unittest.TestCase):
+    def test_counts_in_digits_or_words(self):
+        import grade
+        self.assertTrue(grade.found("üç täze seýilgäh", "3 sany täze seýilgäh bar"))
+        self.assertTrue(grade.found("2 täze studiýa", "iki täze studiýa açyldy"))
+        self.assertFalse(grade.found("2 täze studiýa", "dört täze studiýa"))
+        self.assertFalse(grade.found("12 göterim", "on iki göterim"))  # only 2 to 9
+
+    def test_regex_entries_match_whole_words(self):
+        import grade
+        self.assertTrue(grade.found(r"re:\bi[cç]in\b", "siz için"))
+        self.assertFalse(grade.found(r"re:\bi[cç]in\b", "öýüň içinde"))
+
+    def test_comma_separated_cases(self):
+        tmp = tempfile.mkdtemp()
+        try:
+            with open(os.devnull, "w") as null:
+                stdout, sys.stdout = sys.stdout, null
+                try:
+                    code = rc.main(["--answers", tmp, "--runs", "1", "--case", "%s,%s" % tuple(rc.cases()[:2]), "--out", tmp])
+                finally:
+                    sys.stdout = stdout
+            self.assertEqual(code, 1)  # no saved answers, so both fail
+            report = rc.read(os.path.join(tmp, "report.md"))
+            self.assertIn("0 of 2 cases pass", report)
+        finally:
+            shutil.rmtree(tmp)
+
+
 if __name__ == "__main__":
     unittest.main()

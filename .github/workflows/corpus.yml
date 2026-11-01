@@ -15,6 +15,9 @@ on:
       runs:
         description: "Answers per case"
         default: "3"
+      cases:
+        description: "Only these cases, comma-separated (empty: all)"
+        default: ""
 
 permissions:
   contents: read
@@ -37,10 +40,13 @@ jobs:
       - name: Run the corpus
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          VARIANT: ${{ inputs.variant || 'skill' }}
+          RUNS: ${{ inputs.runs || '3' }}
+          CASES: ${{ inputs.cases }}
         run: >-
           uv run --no-project --with anthropic==2.3.0 python tests/run_corpus.py
-          --variant "${{ inputs.variant || 'skill' }}"
-          --runs "${{ inputs.runs || '3' }}"
+          --variant "$VARIANT" --runs "$RUNS" --case "$CASES"
+          --print-failed
       - name: Keep the answers
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

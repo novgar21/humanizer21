@@ -111,7 +111,7 @@ def ask(client, system, message, model, effort):
 
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    p.add_argument("--case", action="append", help="run only this case (repeatable)")
+    p.add_argument("--case", action="append", help="run only this case (repeatable, or comma-separated)")
     p.add_argument("--runs", type=int, default=3, help="answers per case (default 3)")
     p.add_argument("--need", type=int, help="passing answers a case needs (default: runs - 1, at least 1)")
     p.add_argument("--jobs", type=int, default=6, help="requests sent at the same time (default 6)")
@@ -120,10 +120,12 @@ def main(argv=None):
     p.add_argument("--effort", default="high", choices=["low", "medium", "high", "xhigh", "max"])
     p.add_argument("--out", default=os.path.join(ROOT, "corpus-results"), help="folder for answers and report")
     p.add_argument("--answers", help="grade saved answers from this folder (<case>/<n>.txt) instead of asking a model")
+    p.add_argument("--print-failed", action="store_true", help="print the text of every failed answer after the report")
     p.add_argument("--dry-run", action="store_true", help="print sizes and the first request, send nothing")
     args = p.parse_args(argv)
 
-    selected = args.case or cases()
+    selected = [c for arg in (args.case or []) for c in arg.split(",") if c.strip()] or cases()
+    selected = [c.strip() for c in selected]
     unknown = [c for c in selected if c not in cases()]
     if unknown:
         p.error("unknown case: %s" % ", ".join(unknown))
@@ -146,7 +148,7 @@ def main(argv=None):
 
     jobs = [(case, n) for case in selected for n in range(1, args.runs + 1)]
     totals = {"input": 0, "cache_read": 0, "cache_write": 0, "output": 0}
-    results = {}
+    results, texts = {}, {}
 
     def one(job):
         case, n = job
@@ -178,6 +180,8 @@ def main(argv=None):
                 totals["output"] += usage.output_tokens
             failed = check(case, answer)
             results[case, n] = failed
+            if failed:
+                texts[case, n] = answer
             print("%-24s run %d: %s" % (case, n, "OK" if not failed else "FAIL (%d)" % len(failed)), flush=True)
 
     rows = []
@@ -196,6 +200,10 @@ def main(argv=None):
         with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as fh:
             fh.write(report)
     print("\n" + report)
+    if args.print_failed:
+        for (case, n), answer in sorted(texts.items()):
+            text = final_text(answer)
+            print("\n===== %s, run %d: %s\n%s" % (case, n, "; ".join(results[case, n]), text if text is not None else answer))
     if fatal is not None:
         print("Stopped early: %s" % fatal, file=sys.stderr)
         return 2

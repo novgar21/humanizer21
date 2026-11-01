@@ -1,17 +1,10 @@
 name: Corpus run
 
 # Sends every corpus case to the model and grades the answers.
-# Costs API credits, so it runs only when the skill text changes, or by hand.
+# One full run costs about 8 USD in API credits, so it runs only by hand:
+# Actions > Corpus run > Run workflow. Run it before a release that changes
+# SKILL.md, references/ or prompts/.
 on:
-  pull_request:
-    paths:
-      - SKILL.md
-      - references/**
-      - prompts/**
-      - scripts/barla.py
-      - tests/corpus/**
-      - tests/grade.py
-      - tests/run_corpus.py
   workflow_dispatch:
     inputs:
       variant:
@@ -32,8 +25,6 @@ concurrency:
 
 jobs:
   corpus:
-    # Pull requests from forks get no secrets; skip them instead of failing.
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:

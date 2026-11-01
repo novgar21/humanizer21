@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.2
+
+From the first automatic corpus run (`tests/run_corpus.py`):
+
+- The subject of a passive verb takes no accusative, after a number too: `12 sany kompýuter oturdyldy`, not `kompýuteri oturdyldy`. Added to `references/morphology.md`; the model wrote the wrong form in all three answers of one case.
+- Questions in a Q&A section become headings or plain lines, never bold (§17).
+- The audit now checks a translation from Russian for Cyrillic letters left inside Turkmen words (`toplumа` with a Cyrillic `а`).
+- Two corpus checks accepted only one wording of a correct answer: `hünärleriň resmi sanawy barada hem maglumat ýok` and the imperfective `türgenleşýärdi – hatda` in a translated quote now pass.
+
 ## 1.2.1
 
 - When the source contradicts itself, both statements stay until the author answers, and the place goes under "to verify". Found in a test where the skill kept one of two figures and deleted the other.

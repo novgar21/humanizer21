@@ -31,6 +31,7 @@ Suffixes attach directly, without space, hyphen or apostrophe. A hyphen appears 
 - Back stem `-lar`, front stem `-ler`: `ýurtlar`, `welaýatlar`, `şäherler`, `işler`, `kompýuterler`.
 - After a rounded first syllable a final `-y/-i` rounds: `guzy → guzular`, `goşgy → goşgular`.
 - After a number the noun stays singular: `üç gün`, `bäş ýyl`, `10 müň adam`. Not `üç günler`.
+- The subject of a passive verb takes no accusative, with or without a number: `12 sany kompýuter oturdyldy`, `kitaphana açyldy`. Not `12 sany kompýuteri oturdyldy`, `kompýuterleri oturdyldy`. The accusative goes on the object of an active verb: `kompýuterleri oturtdylar`.
 - `ol → olar`, `şol → şolar`.
 
 ## 4. Possessive suffixes

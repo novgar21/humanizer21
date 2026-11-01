@@ -167,6 +167,7 @@ The fact underneath is usually sound. Keep it and remove the dressing.
 ### 17. Bold labels, emoji, decorative headings
 
 - Bold labels with colons on every item (`**Esasy pikir:** ...`): turn the list into sentences when the labels carry no information of their own.
+- Bold questions in a Q&A or FAQ section (`**Hünäri üýtgedip bolýarmy?**`): make each question a heading of the next level (`### Hünäri üýtgedip bolýarmy?`) or a plain line, never bold.
 - Headings on a text of three paragraphs, headings that capitalize every word, a horizontal rule between every section.
 - Arrows in place of a verb (`Tejribe → netije`, `Okuw ➜ iş`): write the sentence. Keep an arrow only in a diagram or a table of changes.
 - **Emoji: remove them by default, in every genre, including social posts.** Keep emoji only when the user asks for them or gives a voice sample that uses them, and then at the sample's rate. Never one emoji per line or per sentence.

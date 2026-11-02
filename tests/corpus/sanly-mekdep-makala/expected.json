@@ -15,7 +15,7 @@
   ],
   "must_not": [
     "Elbetde",
-    "##",
+    "re:\\n#{1,6} ",
     "**",
     "Aşakdaky bölümlerde",
     "Platforma barada gürrüň",

@@ -32,7 +32,7 @@ WORKFLOW
 - k p t ç → g b d j before a vowel suffix in words of 2+ syllables: kitaby, agajy, maksady, Merediň. Not in one-syllable stems (itiň) or -at/-et loans (hökümeti).
 - Dropped vowel: ogul→ogly, oglunyň (not ogluň, which is 'your'), agyz→agzy, burun→burny. Pair words keep the hyphen: gije-gündiz.
 - After the 3rd person possessive add n: welaýatynda, kararyny, obasyna.
-- Noun stays singular after a number: üç kitap, 40 talyp. With a passive verb it also stays in the base form: 12 kompýuter oturdyldy (not kompýuteri).
+- Noun stays singular after a number: üç kitap, 40 talyp. With a passive verb it also stays in the base form: 12 kompýuter ornaşdyryldy (not kompýuteri).
 - Ordinals: 2026-njy ýyl, 2025-nji ýyl, 25-nji oktýabr, 6-njy, 9-njy, 10-njy, 1-nji, 3-nji (by the vowel of the spoken last word).
 - Question suffix together: geldimi. däl, iň, bilen, üçin, ýaly are separate. Hyphen: ýa-da, hem-de, ABŞ-nyň.
 - Capitals: Aşgabat şäheri, Mary welaýaty; months lowercase; Täze ýyl.

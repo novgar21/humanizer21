@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.3
+
+From the second corpus run and a native speaker's review:
+
+- Equipment is `ornaşdyryldy`, `gurnaldy` or `enjamlaşdyryldy`, not `oturdyldy`, which is for trees (`nahal oturdyldy`). Added to `references/morphology.md` and `references/turkmen-tells.md`; the examples of the passive rule now use `ornaşdyryldy`.
+- After an attribute the izafet ending is correct and is not an accusative: `12 sany häzirki zaman kompýuterleri ornaşdyryldy`.
+- Corpus checks accept correct wordings they used to reject: `46 km` as well as `46 kilometr`, `agaç gabygyndan` as well as `agajyň`, `baýram günlerinde` in a translated quote, a plural verb before a dash, and one heading at the top of a web article.
+
 ## 1.2.2
 
 From the first automatic corpus run (`tests/run_corpus.py`):

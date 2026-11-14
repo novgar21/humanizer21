@@ -185,6 +185,8 @@ Three layers:
 
 Keep international words that have no established Turkmen equivalent: `prezident`, `parlament`, `ministr`, `internet`, `kompýuter`, `programma`, `tehnologiýa`, `innowasiýa`, `sport`, `teatr`, `konsert`. Inventing a native word where none is in use produces odd text.
 
+Do not swap a correct word of the source for a synonym from the table above: the table is for choosing a word when you write or translate. `1-nji kurs` (a year of study) stays `1-nji kurs`, not `birinji ýyl`; Russian `насосная станция` is `nasos stansiýasy`. Fix only the suffix if it is wrong (`1-nci kurs` → `1-nji kurs`). Found in a test where both were replaced by correct but unasked synonyms.
+
 ## 10. Register and synonyms
 
 | Everyday | Formal / news | Meaning |

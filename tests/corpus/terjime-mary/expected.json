@@ -32,7 +32,7 @@
     "450 gektar",
     "re:120 (kilometr|km)",
     "14 oba",
-    "iki sany t\u00e4ze nasos stansi\u00fdasy",
+    "re:(iki|2)( sany)? t\u00e4ze nasos (stansi\u00fdasy|beketi)",
     "1-nji sent\u00fdabr",
     "50 metr",
     "0,9 metr",

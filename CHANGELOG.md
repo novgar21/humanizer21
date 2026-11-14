@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.2.4
+
+From a manual check of 1.2.3 against the corpus:
+
+- A correct word of the source is not swapped for a synonym from the loanword table: `1-nji kurs` stays, and Russian `насосная станция` is `nasos stansiýasy`. Added to `references/punctuation-lexicon.md`.
+- Two corpus checks accept a second correct wording: `birinji ýyl talyplary` next to `1-nji kursuň talyplary`, and `nasos beketi` next to `nasos stansiýasy`.
+
 ## 1.2.3
 
 From the second corpus run and a native speaker's review:
